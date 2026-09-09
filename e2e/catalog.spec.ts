@@ -30,7 +30,6 @@ test.describe('Catálogo — busca, filtros, ordenação, paginação e históri
     const parsedArtPrices = artPrices.map((text) => Number.parseFloat(text))
     expect(parsedArtPrices).toEqual([...parsedArtPrices].sort((a, b) => a - b))
 
-
     await page.getByRole('button', { name: 'Todas as coleções' }).click()
     await expect(page).not.toHaveURL(/category=/)
     await expect(page.getByLabel('Página 1')).toHaveAttribute('aria-current', 'page')
