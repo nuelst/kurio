@@ -78,7 +78,6 @@ http.interceptors.request.use((config) => {
   return config
 })
 
-/** Endpoints where a 401 means "this attempt was rejected", not "the current session went stale". */
 const AUTH_ATTEMPT_PATHS = ['/auth/login', '/auth/register']
 
 http.interceptors.response.use(
