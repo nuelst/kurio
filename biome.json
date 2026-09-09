@@ -13,7 +13,7 @@
       "!**/playwright-report",
       "!**/test-results",
       "!**/public/mockServiceWorker.js",
-      "!**/public/*.svg",
+      "!**/public/**/*.svg",
       "!**/CHALLENGE.md"
     ]
   },
@@ -32,6 +32,18 @@
       "preset": "recommended"
     }
   },
+  "overrides": [
+    {
+      "includes": ["src/components/ui/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noArrayIndexKey": "off"
+          }
+        }
+      }
+    }
+  ],
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
