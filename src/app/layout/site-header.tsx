@@ -1,12 +1,18 @@
 import { Link } from '@tanstack/react-router'
+import { LogOut } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import { authModalStore, useLogout } from '@/features/auth'
 import { notImplementedToast } from '@/shared/lib/not-implemented'
+import { useSession } from '@/shared/stores/session-store'
 import { CartIcon, LoginIcon, SearchIcon } from '@/shared/ui/icons'
 
 const secondaryNavItems = ['Mercado', 'Criadores', 'Aprenda']
 
 export function SiteHeader() {
+  const user = useSession((state) => state.user)
+  const logout = useLogout()
+
   return (
     <header>
       <div className="mx-auto flex h-16 max-w-page items-center justify-between gap-6 border-b-[3px] border-primary px-4 sm:px-6">
@@ -53,10 +59,35 @@ export function SiteHeader() {
           >
             <CartIcon className="size-6" />
           </Button>
-          <Button type="button" onClick={() => notImplementedToast('Login')}>
-            <LoginIcon className="size-5" />
-            Entrar
-          </Button>
+
+          {user ? (
+            <div className="flex items-center gap-2">
+              <img
+                src={user.avatarUrl}
+                alt=""
+                width={32}
+                height={32}
+                className="size-8 rounded-full object-cover"
+              />
+              <span className="hidden max-w-24 truncate text-sm text-foreground sm:inline">
+                {user.name}
+              </span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label="Sair"
+                onClick={() => logout()}
+              >
+                <LogOut className="size-4" />
+              </Button>
+            </div>
+          ) : (
+            <Button type="button" onClick={() => authModalStore.getState().open('login')}>
+              <LoginIcon className="size-5" />
+              Entrar
+            </Button>
+          )}
         </div>
       </div>
     </header>
