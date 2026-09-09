@@ -126,3 +126,5 @@ export function SiteFooter() {
     </footer>
   )
 }
+
+//TODO: mudar os icones
