@@ -24,7 +24,7 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
   if (totalPages <= 1) return null
 
   return (
-    <nav aria-label="Paginação" className="flex items-center justify-center gap-2">
+    <nav aria-label="Paginação" className="flex items-center justify-end gap-2">
       <Button
         type="button"
         variant="outline"
