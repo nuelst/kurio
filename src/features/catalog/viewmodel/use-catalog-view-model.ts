@@ -45,14 +45,14 @@ export function useCatalogViewModel({ search, onSearchChange }: CatalogViewModel
           items: page.items.map((item) =>
             item.id === event.data.nftId
               ? {
-                ...item,
-                edition: {
-                  ...item.edition,
-                  priceEth: event.data.priceEth,
-                  available: event.data.available,
-                  version: event.version,
-                },
-              }
+                  ...item,
+                  edition: {
+                    ...item.edition,
+                    priceEth: event.data.priceEth,
+                    available: event.data.available,
+                    version: event.version,
+                  },
+                }
               : item,
           ),
         }
