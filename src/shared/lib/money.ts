@@ -1,6 +1,5 @@
 import Decimal from 'decimal.js'
 
-
 export type EthAmount = string
 
 export function add(a: EthAmount, b: EthAmount): EthAmount {
