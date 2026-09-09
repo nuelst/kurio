@@ -27,11 +27,11 @@ export function useToggleFavorite() {
         page === undefined
           ? page
           : {
-            ...page,
-            items: page.items.map((item) =>
-              item.id === nftId ? { ...item, isFavorite: !isFavorite } : item,
-            ),
-          },
+              ...page,
+              items: page.items.map((item) =>
+                item.id === nftId ? { ...item, isFavorite: !isFavorite } : item,
+              ),
+            },
       )
       queryClient.setQueryData<NftDetail>(['nft-detail', nftId], (detail) =>
         detail === undefined ? detail : { ...detail, isFavorite: !isFavorite },
