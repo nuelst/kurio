@@ -78,11 +78,15 @@ http.interceptors.request.use((config) => {
   return config
 })
 
+/** Endpoints where a 401 means "this attempt was rejected", not "the current session went stale". */
+const AUTH_ATTEMPT_PATHS = ['/auth/login', '/auth/register']
+
 http.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     const apiError = toApiError(error)
-    if (apiError.kind === 'unauthorized') {
+    const isAuthAttempt = AUTH_ATTEMPT_PATHS.some((path) => error.config?.url?.includes(path))
+    if (apiError.kind === 'unauthorized' && !isAuthAttempt) {
       sessionStore.getState().expire()
     }
     return Promise.reject(apiError)
