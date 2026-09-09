@@ -2,6 +2,7 @@ import { createRootRoute, Outlet } from '@tanstack/react-router'
 
 import { SiteFooter } from '@/app/layout/site-footer'
 import { SiteHeader } from '@/app/layout/site-header'
+import { AuthModal } from '@/features/auth'
 import { NotFound } from '@/shared/ui/not-found'
 
 export const Route = createRootRoute({
@@ -23,6 +24,7 @@ function RootLayout() {
         <Outlet />
       </main>
       <SiteFooter />
+      <AuthModal />
     </div>
   )
 }
