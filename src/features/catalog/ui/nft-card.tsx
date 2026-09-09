@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { Heart } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
@@ -20,14 +21,21 @@ export function NftCard({ nft, onToggleFavorite }: NftCardProps) {
       data-testid="nft-card"
     >
       <div className="bg-muted relative aspect-square w-full overflow-hidden rounded-[15px]">
-        <img
-          src={nft.imageUrl}
-          alt={nft.title}
-          loading="lazy"
-          width={250}
-          height={250}
-          className="size-full object-cover"
-        />
+        <Link
+          to="/nfts/$nftId"
+          params={{ nftId: nft.id }}
+          className="absolute inset-0"
+          aria-label={nft.title}
+        >
+          <img
+            src={nft.imageUrl}
+            alt=""
+            loading="lazy"
+            width={250}
+            height={250}
+            className="size-full object-cover"
+          />
+        </Link>
         <Button
           type="button"
           variant="secondary"
@@ -48,7 +56,7 @@ export function NftCard({ nft, onToggleFavorite }: NftCardProps) {
         ) : null}
       </div>
 
-      <div className="flex flex-col gap-1 px-4 pb-4">
+      <Link to="/nfts/$nftId" params={{ nftId: nft.id }} className="flex flex-col gap-1 px-4 pb-4">
         <p className="text-xs text-[#B39463]">{nft.creatorName}</p>
         <h3
           className="truncate text-base leading-4 font-normal text-[#F5F1EB]"
@@ -64,7 +72,7 @@ export function NftCard({ nft, onToggleFavorite }: NftCardProps) {
             {nft.edition.available}/{nft.edition.totalSupply} disponíveis
           </span>
         </div>
-      </div>
+      </Link>
     </div>
   )
 }
