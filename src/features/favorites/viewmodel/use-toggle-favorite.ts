@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { CatalogPage } from '@/features/catalog/model/nft'
 import { addFavorite, removeFavorite } from '@/features/favorites/api/favorites-api'
+import type { NftDetail } from '@/features/nft-detail/model/nft-detail'
 
 interface ToggleFavoriteInput {
   nftId: string
@@ -15,31 +16,40 @@ export function useToggleFavorite() {
       isFavorite ? removeFavorite(nftId) : addFavorite(nftId),
     onMutate: async ({ nftId, isFavorite }) => {
       await queryClient.cancelQueries({ queryKey: ['catalog'] })
+      await queryClient.cancelQueries({ queryKey: ['nft-detail', nftId] })
 
       const previousQueries = queryClient.getQueriesData<CatalogPage>({
         queryKey: ['catalog'],
       })
+      const previousDetail = queryClient.getQueryData<NftDetail>(['nft-detail', nftId])
 
       queryClient.setQueriesData<CatalogPage>({ queryKey: ['catalog'] }, (page) =>
         page === undefined
           ? page
           : {
-              ...page,
-              items: page.items.map((item) =>
-                item.id === nftId ? { ...item, isFavorite: !isFavorite } : item,
-              ),
-            },
+            ...page,
+            items: page.items.map((item) =>
+              item.id === nftId ? { ...item, isFavorite: !isFavorite } : item,
+            ),
+          },
+      )
+      queryClient.setQueryData<NftDetail>(['nft-detail', nftId], (detail) =>
+        detail === undefined ? detail : { ...detail, isFavorite: !isFavorite },
       )
 
-      return { previousQueries }
+      return { previousQueries, previousDetail, nftId }
     },
     onError: (_error, _input, context) => {
       context?.previousQueries.forEach(([queryKey, data]) => {
         queryClient.setQueryData(queryKey, data)
       })
+      if (context) {
+        queryClient.setQueryData(['nft-detail', context.nftId], context.previousDetail)
+      }
     },
-    onSettled: () => {
+    onSettled: (_data, _error, { nftId }) => {
       queryClient.invalidateQueries({ queryKey: ['catalog'] })
+      queryClient.invalidateQueries({ queryKey: ['nft-detail', nftId] })
     },
   })
 }
