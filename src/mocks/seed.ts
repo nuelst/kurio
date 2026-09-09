@@ -1,9 +1,6 @@
-import nftArt01 from '@/assets/nft/nft-01.png'
-import nftArt02 from '@/assets/nft/nft-02.png'
-import nftArt03 from '@/assets/nft/nft-03.png'
-import nftArt04 from '@/assets/nft/nft-04.png'
 import { hashPassword } from '@/mocks/auth'
 import { clearDb, db, persistDb, restoreDb } from '@/mocks/db'
+import { nftArtworks } from '@/mocks/fixtures/nft-artworks'
 import { placeholderImage } from '@/mocks/fixtures/placeholder-image'
 
 /** Category sizes mirror the Figma sidebar counts (Arte digital 33, Fotografia 12, ...). */
@@ -30,7 +27,6 @@ const categoryCounts: Record<string, number> = {
   utility: 18,
 }
 
-const artworks = [nftArt01, nftArt02, nftArt03, nftArt04]
 const adjectives = [
   'Emerald',
   'Sage',
@@ -96,7 +92,7 @@ async function seedFixtures() {
         id,
         title,
         description: `Peça digital exclusiva da coleção ${label}.`,
-        imageUrl: cycle(artworks, sequence),
+        imageUrl: cycle(nftArtworks, sequence),
         category,
         creatorName: cycle(creators, sequence),
         createdAt: new Date(Date.now() - sequence * 3_600_000).toISOString(),

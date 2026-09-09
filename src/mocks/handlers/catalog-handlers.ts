@@ -2,6 +2,7 @@ import { delay, HttpResponse, http } from 'msw'
 import type { CatalogPage, NftSummary } from '@/features/catalog/model/nft'
 import { getUserIdFromRequest } from '@/mocks/auth'
 import { db } from '@/mocks/db'
+import { toNftSummary } from '@/mocks/handlers/nft-mapper'
 import { getScenario } from '@/mocks/scenarios'
 
 const PAGE_SIZE = 9
@@ -92,21 +93,7 @@ export const catalogHandlers = [
       .filter((entry): entry is typeof entry & { edition: NonNullable<typeof entry.edition> } =>
         Boolean(entry.edition),
       )
-      .map(({ nft, edition }) => ({
-        id: nft.id,
-        title: nft.title,
-        imageUrl: nft.imageUrl,
-        category: nft.category,
-        creatorName: nft.creatorName,
-        edition: {
-          id: edition.id,
-          priceEth: edition.priceEth,
-          totalSupply: edition.totalSupply,
-          available: edition.available,
-          version: edition.updatedVersion,
-        },
-        isFavorite: favoriteIds.has(nft.id),
-      }))
+      .map(({ nft, edition }) => toNftSummary(nft, edition, favoriteIds.has(nft.id)))
 
     const response: CatalogPage = {
       items,
