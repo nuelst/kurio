@@ -52,7 +52,12 @@ export function NftPurchasePanel({
   return (
     <div className="flex flex-1 flex-col justify-between gap-6 lg:h-[444px]">
       <div>
-        <h1 className="text-[28px] leading-7 font-bold text-foreground">{title}</h1>
+        <h1
+          data-testid="nft-detail-title"
+          className="text-[28px] leading-7 font-bold text-foreground"
+        >
+          {title}
+        </h1>
         <div className="mt-3 flex flex-wrap items-center gap-4">
           <span className="text-[22px] leading-4 font-bold text-[#E89B55]">
             {formatEth(priceEth)}
@@ -107,7 +112,11 @@ export function NftPurchasePanel({
           >
             <Minus className="size-4" />
           </button>
-          <span className="w-4 text-center text-foreground" aria-live="polite">
+          <span
+            data-testid="nft-quantity"
+            className="w-4 text-center text-foreground"
+            aria-live="polite"
+          >
             {quantity}
           </span>
           <button

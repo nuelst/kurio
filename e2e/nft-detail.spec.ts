@@ -3,7 +3,7 @@ import { expect, test } from './fixtures'
 test.describe('Detalhe do NFT — acesso direto, estoque e favoritos', () => {
   test('acesso direto carrega o NFT correto', async ({ page }) => {
     await page.goto('/nfts/nft-1')
-    await expect(page.getByRole('heading', { name: /#/ })).toBeVisible()
+    await expect(page.getByTestId('nft-detail-title')).toHaveText('Sage Baron #060')
     await expect(page.getByText('Sobre este NFT:')).toBeVisible()
     await expect(page.getByText('Mais desta coleção')).toBeVisible()
   })
@@ -24,7 +24,7 @@ test.describe('Detalhe do NFT — acesso direto, estoque e favoritos', () => {
 
     const decrement = page.getByRole('button', { name: 'Diminuir quantidade' })
     const increment = page.getByRole('button', { name: 'Aumentar quantidade' })
-    const quantity = page.locator('[aria-live="polite"]')
+    const quantity = page.getByTestId('nft-quantity')
 
     await expect(decrement).toBeDisabled()
 
