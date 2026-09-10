@@ -20,7 +20,7 @@ Implementado até aqui:
 - **Confirmação de pedido, assíncrona de verdade**: o pedido nasce `pending` e resolve (`confirmed`/`declined`) ~1.5s depois via `order.updated` no Socket.IO (com polling de fallback) — sobrevive a reload no meio do processamento sem duplicar a compra. Recibo em `/orders/:id` com ID de transação, itens, taxas e total, um snapshot congelado no momento da confirmação (mudanças depois no catálogo não afetam o recibo), com link simulado "Ver no Etherscan". Pedidos recusados mostram uma tela distinta sem mexer no carrinho — veja [ARCHITECTURE.md](ARCHITECTURE.md#pagamento-e-confirmação-de-pedido).
 - **Tempo real**: atualização de preço/disponibilidade via Socket.IO (evento `nft.updated`) refletida no catálogo, no carrinho e no pagamento — inclusive quando o próprio estoque cai por causa de uma compra confirmada em outra aba/usuário; e reconciliação automática pós-reconexão do socket (refetch dos recursos ativos ao reconectar, cobrindo qualquer atualização perdida enquanto desconectado) — veja [ARCHITECTURE.md](ARCHITECTURE.md#tempo-real-socketio).
 - Camada de mocks com MSW + `@mswjs/data`, com cenários de rede configuráveis (latência, vazio, erro, pedido recusado, timeout na criação do pedido), usando os 4 artworks de NFT fornecidos.
-- Suíte de testes E2E (Playwright): catálogo, autenticação, detalhe do NFT, carrinho, perfil, carteiras, pagamento (fluxo completo, recusa de rede, pedido recusado, sem carteira cadastrada, cotação desatualizada, idempotência, timeout com recuperação), confirmação de pedido (recibo, recuperação após refresh, imutabilidade, pedido pendente resolvendo ao vivo) e tempo real (reconexão do socket, reconciliação), rodando em viewport desktop e mobile.
+- Suíte de testes E2E (Playwright): catálogo (busca/filtro/ordenação/paginação/histórico, loading lento com skeleton, erro com retry), autenticação, detalhe do NFT (favoritar com rollback em falha), carrinho, perfil, carteiras, pagamento (fluxo completo, recusa de rede, pedido recusado, sem carteira cadastrada, cotação desatualizada, idempotência, timeout com recuperação, expiração de sessão, preço mudando ao vivo), confirmação de pedido (recibo, recuperação após refresh, imutabilidade, pedido pendente resolvendo ao vivo), tempo real (reconexão do socket, reconciliação, eventos duplicados/antigos, desconexão), navegação por teclado e foco de diálogos, e regressão visual (baselines versionadas) — rodando em viewport desktop (1440px), mobile (390px) e tablet (768px).
 - **Auditoria Lighthouse**: Início e Detalhe do NFT, mobile e desktop, 3 medições por combinação com mediana reportada — `bun run lighthouse`. Relatório em [lighthouse/REPORT.md](lighthouse/REPORT.md) (ambiente, resultados, causas de qualquer categoria abaixo da meta), relatórios HTML/JSON individuais em `lighthouse/reports/` — veja [ARCHITECTURE.md](ARCHITECTURE.md#desvios-e-limitações).
 
 Chrome visível mas ainda sem função real (busca global, nav secundária, filtro por rede, links do footer, OAuth/recuperação de senha, itens fora do escopo do sidebar de conta) mostra um toast "chega em breve" ao ser clicado — veja [ARCHITECTURE.md](ARCHITECTURE.md#identidade-visual-kurio).
@@ -58,7 +58,7 @@ A aplicação sobe com os mocks (MSW) ativos por padrão — não é necessário
 | `bun run lint` / `lint:fix`       | Biome (lint).                                                                         |
 | `bun run format` / `format:check` | Biome (formatação).                                                                   |
 | `bun run check`                   | Biome — lint + formatação + organização de imports, com correção automática.          |
-| `bun run test:e2e`                | Testes Playwright (builda, sobe o preview e executa Chromium desktop + mobile).       |
+| `bun run test:e2e`                | Testes Playwright (builda, sobe o preview e executa Chromium desktop + mobile + tablet). |
 | `bun run test:e2e:ui`             | Testes Playwright em modo interativo.                                                 |
 | `bun run lighthouse`              | Build + auditoria Lighthouse (Início/Detalhe do NFT, mobile/desktop, 3 runs cada).     |
 
@@ -87,7 +87,9 @@ localStorage.setItem('nft-marketplace.scenario', 'empty') // catálogo sempre va
 localStorage.setItem('nft-marketplace.scenario', 'error') // catálogo/carrinho respondem 500
 localStorage.setItem('nft-marketplace.scenario', 'declined') // confirmação de compra é sempre recusada (sem afetar o resto)
 localStorage.setItem('nft-marketplace.scenario', 'timeout') // POST /api/orders nunca responde (testa timeout + reenvio idempotente)
+localStorage.setItem('nft-marketplace.scenario', 'forbidden') // POST /api/favorites responde 403
 window.__mocks__.expireSession(userId) // revoga o token atual — simula sessão expirada no meio de um fluxo (ex.: checkout)
+window.__mocks__.broadcastRawNftUpdate(event) // emite um nft.updated cru (versão/dados à sua escolha) — testa duplicados/eventos antigos
 localStorage.removeItem('nft-marketplace.scenario') // volta ao cenário padrão
 ```
 
@@ -109,4 +111,6 @@ e recarregue a página.
 bun run test:e2e
 ```
 
-Roda a suíte em `e2e/` contra o build de produção (`vite preview`), em Chromium desktop (1440×900) e mobile (Pixel 7).
+Roda a suíte em `e2e/` contra o build de produção (`vite preview`), em Chromium desktop (1440×900), mobile (Pixel 7) e tablet (768×1024 — restrito a `e2e/responsive-tablet.spec.ts`, não duplica a suite inteira).
+
+Regressão visual (`e2e/visual.spec.ts`) usa baselines versionadas em `e2e/visual.spec.ts-snapshots/`; para atualizá-las depois de uma mudança visual intencional: `bunx playwright test e2e/visual.spec.ts --update-snapshots`.
