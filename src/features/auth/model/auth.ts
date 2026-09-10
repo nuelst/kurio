@@ -22,7 +22,9 @@ export type SignupInput = z.infer<typeof signupSchema>
 export interface AuthUser {
   id: string
   name: string
+  username: string
   email: string
+  ensName: string
   avatarUrl: string
 }
 
