@@ -15,6 +15,7 @@
       "!**/lighthouse/reports",
       "!**/public/mockServiceWorker.js",
       "!**/public/**/*.svg",
+      "!**/src/assets/**/*.svg",
       "!**/CHALLENGE.md"
     ]
   },

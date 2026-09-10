@@ -68,7 +68,7 @@ export function NftCard({ nft, onToggleFavorite }: NftCardProps) {
           <span className="text-lg leading-4 font-bold text-[#E89B55]" data-testid="nft-price">
             {formatEth(nft.edition.priceEth)}
           </span>
-          <span className="text-xs text-[#B39463]">
+          <span className="hidden text-xs text-[#B39463] sm:inline">
             {nft.edition.available}/{nft.edition.totalSupply} disponíveis
           </span>
         </div>
