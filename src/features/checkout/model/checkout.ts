@@ -13,7 +13,7 @@ export type CollectorFormInput = z.infer<typeof collectorFormSchema>
 
 export type WalletConnectionStatus = 'idle' | 'connecting' | 'connected' | 'rejected'
 
-export type OrderStatus = 'confirmed' | 'declined'
+export type OrderStatus = 'pending' | 'confirmed' | 'declined'
 
 export interface OrderWalletSnapshot {
   label: string
@@ -31,14 +31,22 @@ export interface OrderSnapshot {
   coupon: CartCoupon | null
   collector: { name: string; email: string; ensName: string; note: string }
   wallet: OrderWalletSnapshot
-  txHash: string
-  confirmedAt: string
+  txHash: string | null
+  confirmedAt: string | null
 }
 
 export interface Order {
   id: string
   status: OrderStatus
+  version: number
   snapshot: OrderSnapshot
+}
+
+export interface OrderUpdatedEvent {
+  id: string
+  resource: 'order'
+  version: number
+  data: { orderId: string; status: OrderStatus }
 }
 
 export interface CreateOrderInput {

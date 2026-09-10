@@ -2,7 +2,7 @@ import type { CreateOrderInput, Order } from '@/features/checkout/model/checkout
 import { http } from '@/shared/lib/http'
 
 export async function createOrder(input: CreateOrderInput): Promise<Order> {
-  const { data } = await http.post<Order>('/orders', input)
+  const { data } = await http.post<Order>('/orders', input, { timeout: 2500 })
   return data
 }
 
