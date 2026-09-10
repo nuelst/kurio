@@ -14,6 +14,26 @@ export function issueToken(userId: string): string {
   return `token-${userId}`
 }
 
+export function generateUniqueUsername(
+  name: string,
+  isTaken: (candidate: string) => boolean,
+): string {
+  const base =
+    name
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, '')
+      .slice(0, 20) || 'colecionador'
+
+  if (!isTaken(base)) return base
+
+  let suffix = 2
+  while (isTaken(`${base}${suffix}`)) suffix += 1
+  return `${base}${suffix}`
+}
+
 const MOCK_PASSWORD_SALT = 'kurio-mock-salt'
 
 export async function hashPassword(password: string): Promise<string> {

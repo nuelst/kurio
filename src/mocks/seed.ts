@@ -67,16 +67,31 @@ async function seedFixtures() {
   db.user.create({
     id: 'user-ana',
     name: 'Ana Souza',
+    username: 'anasouza',
     email: 'ana@example.com',
+    ensName: 'ana.eth',
     password: await hashPassword('demo1234'),
     avatarUrl: placeholderImage('ana'),
   })
   db.user.create({
     id: 'user-bruno',
     name: 'Bruno Lima',
+    username: 'brunolima',
     email: 'bruno@example.com',
+    ensName: '',
     password: await hashPassword('demo1234'),
     avatarUrl: placeholderImage('bruno'),
+  })
+
+  db.wallet.create({
+    id: 'wallet-ana-primary',
+    userId: 'user-ana',
+    label: 'Carteira principal',
+    address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976',
+    network: 'Ethereum',
+    type: 'MetaMask',
+    ensName: 'ana.eth',
+    isPrimary: true,
   })
 
   let sequence = 0
@@ -127,7 +142,7 @@ async function seedFixtures() {
   persistDb()
 }
 
-const SEED_VERSION = '3'
+const SEED_VERSION = '4'
 const SEED_VERSION_KEY = 'nft-marketplace.seed-version'
 
 export async function seedDb(): Promise<void> {

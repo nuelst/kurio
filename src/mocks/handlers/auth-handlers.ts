@@ -1,13 +1,33 @@
 import { HttpResponse, http } from 'msw'
 
-import type { AuthResponse } from '@/features/auth/model/auth'
-import { getUserIdFromRequest, hashPassword, issueToken, verifyPassword } from '@/mocks/auth'
+import type { AuthResponse, AuthUser } from '@/features/auth/model/auth'
+import {
+  generateUniqueUsername,
+  getUserIdFromRequest,
+  hashPassword,
+  issueToken,
+  verifyPassword,
+} from '@/mocks/auth'
 import { db, persistDb } from '@/mocks/db'
 import { placeholderImage } from '@/mocks/fixtures/placeholder-image'
 import { mergeGuestCart } from '@/mocks/handlers/cart-handlers'
 
-function toAuthUser(user: { id: string; name: string; email: string; avatarUrl: string }) {
-  return { id: user.id, name: user.name, email: user.email, avatarUrl: user.avatarUrl }
+function toAuthUser(user: {
+  id: string
+  name: string
+  username: string
+  email: string
+  ensName: string
+  avatarUrl: string
+}): AuthUser {
+  return {
+    id: user.id,
+    name: user.name,
+    username: user.username,
+    email: user.email,
+    ensName: user.ensName,
+    avatarUrl: user.avatarUrl,
+  }
 }
 
 export const authHandlers = [
@@ -49,10 +69,16 @@ export const authHandlers = [
     }
 
     const id = `user-${crypto.randomUUID()}`
+    const username = generateUniqueUsername(
+      name,
+      (candidate) => db.user.findFirst({ where: { username: { equals: candidate } } }) !== null,
+    )
     const user = db.user.create({
       id,
       name,
+      username,
       email,
+      ensName: '',
       password: await hashPassword(password),
       avatarUrl: placeholderImage(id),
     })

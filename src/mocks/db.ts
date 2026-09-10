@@ -4,7 +4,9 @@ export const db = factory({
   user: {
     id: primaryKey(String),
     name: String,
+    username: String,
     email: String,
+    ensName: String,
     password: String,
     avatarUrl: String,
   },
@@ -61,6 +63,8 @@ export const db = factory({
     label: String,
     address: String,
     network: String,
+    type: String,
+    ensName: String,
     isPrimary: Boolean,
   },
 })
