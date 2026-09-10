@@ -1,9 +1,6 @@
-import { RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
-import { AppProviders } from '@/app/providers/app-providers'
-import { router } from '@/app/router'
 import './styles/globals.css'
 
 async function bootstrap() {
@@ -11,6 +8,12 @@ async function bootstrap() {
     const { enableMocking } = await import('@/mocks/browser')
     await enableMocking()
   }
+
+  const [{ RouterProvider }, { AppProviders }, { router }] = await Promise.all([
+    import('@tanstack/react-router'),
+    import('@/app/providers/app-providers'),
+    import('@/app/router'),
+  ])
 
   const rootElement = document.getElementById('root')
   if (!rootElement) throw new Error('Root element (#root) not found')

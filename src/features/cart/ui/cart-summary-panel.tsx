@@ -31,7 +31,7 @@ export function CartSummaryPanel({
   const hasDiscount = Number(quote.discountEth) > 0
 
   return (
-    <aside className="w-full shrink-0 rounded-2xl bg-sidebar p-6 lg:w-[332px]">
+    <aside className="w-full shrink-0 rounded-2xl bg-sidebar p-5 lg:w-[332px]">
       <h2 className="text-lg font-bold text-foreground">Resumo da carteira</h2>
 
       <div className="mt-6">
@@ -65,7 +65,7 @@ export function CartSummaryPanel({
               <Button
                 type="submit"
                 disabled={isApplyingCoupon || !couponCode.trim()}
-                className="shrink-0"
+                className="shrink-0 px-2"
               >
                 Aplicar
               </Button>

@@ -9,9 +9,7 @@ test.describe('Carrinho — itens, cupom, persistência e tempo real', () => {
     await expect(page).toHaveURL(/\/$/)
   })
 
-  test('comprar no detalhe adiciona ao carrinho e reflete no badge do header', async ({
-    page,
-  }) => {
+  test('comprar no detalhe adiciona ao carrinho e reflete no badge do header', async ({ page }) => {
     await page.goto('/nfts/nft-3')
     await page.getByRole('button', { name: 'Comprar', exact: true }).click()
     await expect(page.getByTestId('cart-item-count')).toHaveText('1')
@@ -66,7 +64,7 @@ test.describe('Carrinho — itens, cupom, persistência e tempo real', () => {
     await expect(page.getByText('LAUNCH10', { exact: true })).toBeVisible()
     await expect(page.getByTestId('cart-total')).toHaveText('0.1420 ETH')
 
-    await page.getByRole('button', { name: 'Remover' }).click()
+    await page.getByRole('button', { name: 'Remover', exact: true }).click()
     await expect(page.getByPlaceholder('Digite o código promocional...')).toBeVisible()
     await expect(page.getByTestId('cart-total')).toHaveText('0.1560 ETH')
   })
@@ -101,8 +99,12 @@ test.describe('Carrinho — itens, cupom, persistência e tempo real', () => {
 
     const priceBefore = await page.getByTestId('cart-line-total').textContent()
 
-    await page.evaluate(() => window.__mocks__?.simulateNftUpdate('nft-3', { priceEth: '9.99' }))
-    await expect(page.getByText('Preço de Cosmic Signal #166 foi atualizado')).toBeVisible()
+    await expect(async () => {
+      await page.evaluate(() => window.__mocks__?.simulateNftUpdate('nft-3', { priceEth: '9.99' }))
+      await expect(page.getByText('Preço de Cosmic Signal #166 foi atualizado')).toBeVisible({
+        timeout: 1000,
+      })
+    }).toPass({ timeout: 10_000 })
     await expect(page.getByTestId('cart-line-total')).not.toHaveText(priceBefore ?? '')
 
     await page.evaluate(() => window.__mocks__?.simulateNftUpdate('nft-3', { available: 0 }))
