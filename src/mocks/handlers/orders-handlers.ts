@@ -11,7 +11,6 @@ import { getUserIdFromRequest } from '@/mocks/auth'
 import { db, persistDb } from '@/mocks/db'
 import { buildQuote, clearCart } from '@/mocks/handlers/cart-handlers'
 import { getScenario } from '@/mocks/scenarios'
-import { broadcastNftUpdated, broadcastOrderUpdated } from '@/mocks/socket/socket-handlers'
 
 const PROCESSING_MS = 1500
 
@@ -55,12 +54,17 @@ function buildRequestFingerprint(body: CreateOrderInput): string {
   })
 }
 
-function resolveOrder(record: OrderRecord): OrderRecord {
+async function getSocketBroadcasters() {
+  return import('@/mocks/socket/socket-handlers')
+}
+
+async function resolveOrder(record: OrderRecord): Promise<OrderRecord> {
   if (record.status !== 'pending') return record
   if (Date.now() < record.processingCompletesAt) return record
 
   const isDeclined = getScenario() === 'declined'
   const snapshot = JSON.parse(record.snapshot) as OrderSnapshot
+  const { broadcastNftUpdated, broadcastOrderUpdated } = await getSocketBroadcasters()
 
   if (!isDeclined) {
     for (const item of snapshot.items) {
@@ -131,7 +135,7 @@ export const ordersHandlers = [
           { status: 409 },
         )
       }
-      return HttpResponse.json(toOrder(resolveOrder(existing)))
+      return HttpResponse.json(toOrder(await resolveOrder(existing)))
     }
 
     const quote = buildQuote(userId)
@@ -203,20 +207,20 @@ export const ordersHandlers = [
 
     setTimeout(() => {
       const record = db.order.findFirst({ where: { id: { equals: orderId } } })
-      if (record) resolveOrder(record)
+      if (record) void resolveOrder(record)
     }, PROCESSING_MS)
 
     const created = db.order.findFirst({ where: { id: { equals: orderId } } })
     if (!created) return unauthorized()
 
     if (scenario === 'timeout') {
-      await new Promise<never>(() => {})
+      await new Promise<never>(() => { })
     }
 
     return HttpResponse.json(toOrder(created), { status: 201 })
   }),
 
-  http.get('/api/orders/:id', ({ request, params }) => {
+  http.get('/api/orders/:id', async ({ request, params }) => {
     const userId = getUserIdFromRequest(request)
     if (!userId) return unauthorized()
 
@@ -225,6 +229,6 @@ export const ordersHandlers = [
     })
     if (!order) return HttpResponse.json({ message: 'Pedido não encontrado.' }, { status: 404 })
 
-    return HttpResponse.json(toOrder(resolveOrder(order)))
+    return HttpResponse.json(toOrder(await resolveOrder(order)))
   }),
 ]

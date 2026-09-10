@@ -1,4 +1,3 @@
-import { setupWorker } from 'msw/browser'
 import {
   broadcastRawNftUpdate,
   disconnectSocket,
@@ -9,6 +8,7 @@ import {
 } from '@/mocks/dev-tools'
 import { handlers } from '@/mocks/handlers'
 import { seedDb } from '@/mocks/seed'
+import { setupWorker } from 'msw/browser'
 
 export const worker = setupWorker(...handlers)
 
@@ -39,4 +39,7 @@ export async function enableMocking(): Promise<void> {
     expireSession,
     broadcastRawNftUpdate,
   }
+  import('@/mocks/socket/socket-handlers').then(({ socketHandlers }) => {
+    worker.use(...socketHandlers)
+  })
 }

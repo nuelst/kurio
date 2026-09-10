@@ -1,5 +1,5 @@
 import { expect, test } from './fixtures'
-import { login } from './helpers'
+import { login, skipToCheckoutPayment } from './helpers'
 
 async function addToCartAndGoToCheckout(page: import('@playwright/test').Page) {
   await page.goto('/nfts/nft-3')
@@ -7,6 +7,7 @@ async function addToCartAndGoToCheckout(page: import('@playwright/test').Page) {
   await expect(page.getByText('adicionado ao carrinho')).toBeVisible()
   await page.goto('/checkout')
   await expect(page.getByText('Perfil do colecionador')).toBeVisible()
+  await skipToCheckoutPayment(page)
 }
 
 test.describe('Pagamento e confirmação de pedido', () => {
@@ -84,7 +85,9 @@ test.describe('Pagamento e confirmação de pedido', () => {
   }) => {
     await page.goto('/checkout')
     const dialog = page.getByRole('dialog')
-    await dialog.getByRole('button', { name: 'Criar conta' }).click()
+    // desktop mostra um toggle "Criar conta"; mobile (tela cheia) mostra o link
+    // "Crie uma conta" embaixo do formulário — mesmo destino, texto diferente.
+    await dialog.getByRole('button', { name: /Criar conta|Crie uma conta/ }).click()
     await dialog.getByPlaceholder('Nome de usuário').fill('Visitante Teste')
     await dialog.getByPlaceholder('Digite seu e-mail').fill(`visitante${Date.now()}@example.com`)
     await dialog.getByPlaceholder('Senha', { exact: true }).fill('demo12345')
@@ -264,10 +267,17 @@ test.describe('Pagamento e confirmação de pedido', () => {
     page,
   }) => {
     await login(page)
-    await addToCartAndGoToCheckout(page)
+    await page.goto('/nfts/nft-3')
+    await page.getByRole('button', { name: 'Comprar', exact: true }).click()
+    await expect(page.getByText('adicionado ao carrinho')).toBeVisible()
+    await page.goto('/checkout')
+    await expect(page.getByText('Perfil do colecionador')).toBeVisible()
 
+    // no mobile, a observação faz parte do passo 1 — precisa ser preenchida antes
+    // de avançar pro passo 2 (carteira), onde esse campo não existe mais.
     const note = 'Entregar com cuidado, é para presente.'
     await page.getByPlaceholder('Alguma instrução especial para este pedido?').fill(note)
+    await skipToCheckoutPayment(page)
     await page.getByRole('radio').first().check()
     await expect(page.getByRole('button', { name: 'Desconectar' })).toBeVisible({
       timeout: 3000,
@@ -292,10 +302,23 @@ test.describe('Pagamento e confirmação de pedido', () => {
     await dialog.locator('button[type=submit]').click()
     await expect(dialog).not.toBeVisible()
 
-    // context preserved: note, wallet connection and cart are exactly as left before expiring
-    await expect(page.getByPlaceholder('Alguma instrução especial para este pedido?')).toHaveValue(
-      note,
-    )
+    // context preserved: note, wallet connection and cart are exactly as left before
+    // expiring. On mobile the two live on different steps (note on "Pagamento", wallet
+    // on "Pagamento com carteira") — step back to check the note, then forward again.
+    await expect(page.getByRole('button', { name: 'Desconectar' })).toBeVisible()
+
+    const backButton = page.getByRole('button', { name: 'Voltar' })
+    if (await backButton.isVisible().catch(() => false)) {
+      await backButton.click()
+      await expect(
+        page.getByPlaceholder('Alguma instrução especial para este pedido?'),
+      ).toHaveValue(note)
+      await skipToCheckoutPayment(page)
+    } else {
+      await expect(
+        page.getByPlaceholder('Alguma instrução especial para este pedido?'),
+      ).toHaveValue(note)
+    }
     await expect(page.getByRole('button', { name: 'Desconectar' })).toBeVisible()
 
     await page.getByRole('button', { name: 'Confirmar compra' }).click()

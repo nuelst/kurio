@@ -1,12 +1,11 @@
 import type { NftUpdatedEvent } from '@/features/catalog/model/nft'
 import { revokeSession } from '@/mocks/auth'
 import { db, persistDb } from '@/mocks/db'
-import { broadcastNftUpdated } from '@/mocks/socket/socket-handlers'
 
-export function simulateNftUpdate(
+export async function simulateNftUpdate(
   nftId: string,
   changes: { priceEth?: string; available?: number },
-): void {
+): Promise<void> {
   const edition = db.edition.findFirst({ where: { nftId: { equals: nftId } } })
   if (!edition) return
 
@@ -26,6 +25,7 @@ export function simulateNftUpdate(
     version,
     data: { nftId, editionId: edition.id, priceEth, available },
   }
+  const { broadcastNftUpdated } = await import('@/mocks/socket/socket-handlers')
   broadcastNftUpdated(event)
 }
 
@@ -33,10 +33,8 @@ export function expireSession(userId: string): void {
   revokeSession(userId)
 }
 
-// unlike simulateNftUpdate, this never touches the mock "db" — it emits exactly the event object
-// given, version included, letting tests craft a stale/duplicate event on purpose to prove the
-// client's createEventVersionTracker actually rejects it (not just "happens to look right").
-export function broadcastRawNftUpdate(event: NftUpdatedEvent): void {
+export async function broadcastRawNftUpdate(event: NftUpdatedEvent): Promise<void> {
+  const { broadcastNftUpdated } = await import('@/mocks/socket/socket-handlers')
   broadcastNftUpdated(event)
 }
 

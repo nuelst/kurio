@@ -1,8 +1,5 @@
 import { expect, type Page } from '@playwright/test'
 
-// any protected route (requireAuth) opens the login modal and redirects to "/" — this works on
-// every viewport, unlike clicking the header's "Entrar" button, which only exists on
-// desktop/tablet (hidden below 768px, replaced by the mobile tab bar).
 export async function login(
   page: Page,
   email = 'ana@example.com',
@@ -16,11 +13,29 @@ export async function login(
   await expect(dialog).not.toBeVisible()
 }
 
-// "Sair" existe tanto no header (desktop/tablet) quanto na sidebar de conta em /profile e
-// /wallets (todos os viewports) — usa a da sidebar de conta pra funcionar em qualquer um.
 export async function logoutFromAccountSidebar(page: Page): Promise<void> {
   await page
     .getByRole('navigation', { name: 'Navegação da conta' })
     .getByRole('button', { name: 'Sair' })
     .click()
+}
+
+export async function skipToCheckoutPayment(page: Page): Promise<void> {
+  const continueButton = page.getByRole('button', { name: 'Continuar', exact: true })
+  const reachedPayment = page
+    .getByRole('radio')
+    .first()
+    .or(page.getByText('Você ainda não cadastrou uma carteira.'))
+
+  const isMobileStep = await Promise.race([
+    continueButton.waitFor({ state: 'visible' }).then(() => true),
+    reachedPayment.waitFor({ state: 'visible' }).then(() => false),
+  ])
+
+  if (!isMobileStep) return
+
+  await expect(async () => {
+    await continueButton.click()
+    await expect(reachedPayment).toBeVisible({ timeout: 1000 })
+  }).toPass({ timeout: 15_000 })
 }

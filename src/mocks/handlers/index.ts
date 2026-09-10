@@ -6,8 +6,11 @@ import { nftDetailHandlers } from '@/mocks/handlers/nft-detail-handlers'
 import { ordersHandlers } from '@/mocks/handlers/orders-handlers'
 import { profileHandlers } from '@/mocks/handlers/profile-handlers'
 import { walletsHandlers } from '@/mocks/handlers/wallets-handlers'
-import { socketHandlers } from '@/mocks/socket/socket-handlers'
 
+// socketHandlers (src/mocks/socket/socket-handlers.ts) is intentionally not
+// included here — it pulls in @mswjs/socket.io-binding, which isn't needed for
+// the very first REST response, so `enableMocking()` registers it separately in
+// the background instead of putting it on the critical path to first paint.
 export const handlers = [
   ...authHandlers,
   ...catalogHandlers,
@@ -17,5 +20,4 @@ export const handlers = [
   ...profileHandlers,
   ...walletsHandlers,
   ...ordersHandlers,
-  ...socketHandlers,
 ]

@@ -1,6 +1,6 @@
 {
   "environment": {
-    "date": "2026-09-10T14:07:20.628Z",
+    "date": "2026-09-10T21:47:00.257Z",
     "lighthouseVersion": "13.4.1",
     "chromeVersion": "Google Chrome 152.0.7977.82",
     "nodeVersion": "v24.13.1",
@@ -8,7 +8,7 @@
     "cpu": "11th Gen Intel(R) Core(TM) i5-1155G7 @ 2.50GHz",
     "cpuCount": 8,
     "ramGb": 15,
-    "loadAvg": "2.58, 2.09, 2.58"
+    "loadAvg": "4.31, 6.42, 9.27"
   },
   "results": [
     {
@@ -25,59 +25,59 @@
         {
           "run": 1,
           "scores": {
-            "performance": 64,
-            "accessibility": 95,
+            "performance": 68,
+            "accessibility": 94,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 4923.947625000001,
-            "cls": 0.0007734549903305942,
-            "tbt": 507.9999999999999
+            "lcp": 4706.6564,
+            "cls": 0,
+            "tbt": 391.5
           },
-          "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
+          "clsCause": null
         },
         {
           "run": 2,
           "scores": {
-            "performance": 66,
-            "accessibility": 95,
+            "performance": 62,
+            "accessibility": 94,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 4605.4151999999995,
-            "cls": 0.0007734549903305942,
-            "tbt": 501.4999999999998
+            "lcp": 4778.346799999999,
+            "cls": 0,
+            "tbt": 563
           },
-          "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
+          "clsCause": null
         },
         {
           "run": 3,
           "scores": {
-            "performance": 64,
-            "accessibility": 95,
+            "performance": 62,
+            "accessibility": 94,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 4911.063700000001,
-            "cls": 0.0007734549903305942,
-            "tbt": 489
+            "lcp": 4968.24,
+            "cls": 0,
+            "tbt": 497
           },
-          "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
+          "clsCause": null
         }
       ],
       "medianScores": {
-        "performance": 64,
-        "accessibility": 95,
+        "performance": 62,
+        "accessibility": 94,
         "best-practices": 100,
         "seo": 100
       },
       "medianMetrics": {
-        "lcp": 4911.063700000001,
-        "cls": 0.0007734549903305942,
-        "tbt": 501.4999999999998
+        "lcp": 4778.346799999999,
+        "cls": 0,
+        "tbt": 497
       }
     },
     {
@@ -116,59 +116,59 @@
         {
           "run": 1,
           "scores": {
-            "performance": 95,
+            "performance": 90,
             "accessibility": 95,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 1443.7324000000003,
+            "lcp": 1783.1762,
             "cls": 0.00018883758438456826,
-            "tbt": 60.99999999999994
+            "tbt": 86
           },
           "clsCause": null
         },
         {
           "run": 2,
           "scores": {
-            "performance": 95,
+            "performance": 86,
             "accessibility": 95,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 1387.0567499999997,
+            "lcp": 2126.0207499999997,
             "cls": 0.00018883758438456826,
-            "tbt": 57.50000000000006
+            "tbt": 80.5
           },
           "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
         },
         {
           "run": 3,
           "scores": {
-            "performance": 95,
+            "performance": 90,
             "accessibility": 95,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 1445.3532249999998,
+            "lcp": 1795.3169749999997,
             "cls": 0.00018883758438456826,
-            "tbt": 43.5
+            "tbt": 73
           },
           "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
         }
       ],
       "medianScores": {
-        "performance": 95,
+        "performance": 90,
         "accessibility": 95,
         "best-practices": 100,
         "seo": 100
       },
       "medianMetrics": {
-        "lcp": 1443.7324000000003,
+        "lcp": 1795.3169749999997,
         "cls": 0.00018883758438456826,
-        "tbt": 57.50000000000006
+        "tbt": 80.5
       }
     },
     {
@@ -185,59 +185,59 @@
         {
           "run": 1,
           "scores": {
-            "performance": 63,
+            "performance": 62,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 5223.1457,
+            "lcp": 5632.021,
             "cls": 0,
-            "tbt": 497.5
+            "tbt": 455.5
           },
           "clsCause": null
         },
         {
           "run": 2,
           "scores": {
-            "performance": 66,
+            "performance": 70,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 5109.73725,
+            "lcp": 5162.7315,
             "cls": 0,
-            "tbt": 414.5
+            "tbt": 267.5
           },
           "clsCause": null
         },
         {
           "run": 3,
           "scores": {
-            "performance": 60,
+            "performance": 64,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 5403.642799999999,
+            "lcp": 5391.405999999999,
             "cls": 0,
-            "tbt": 550.8016
+            "tbt": 409.5000000000007
           },
           "clsCause": null
         }
       ],
       "medianScores": {
-        "performance": 63,
+        "performance": 64,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100
       },
       "medianMetrics": {
-        "lcp": 5223.1457,
+        "lcp": 5391.405999999999,
         "cls": 0,
-        "tbt": 497.5
+        "tbt": 409.5000000000007
       }
     },
     {
@@ -276,59 +276,59 @@
         {
           "run": 1,
           "scores": {
-            "performance": 70,
+            "performance": 78,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 2511.8310999999994,
+            "lcp": 1930.8779999999995,
             "cls": 0.2241711367842551,
-            "tbt": 81.99999999999977
+            "tbt": 19
           },
           "clsCause": null
         },
         {
           "run": 2,
           "scores": {
-            "performance": 81,
+            "performance": 79,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 1707.7024000000006,
+            "lcp": 1859.6520000000003,
             "cls": 0.2241711367842551,
-            "tbt": 37.5
+            "tbt": 34
           },
-          "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
+          "clsCause": null
         },
         {
           "run": 3,
           "scores": {
-            "performance": 82,
+            "performance": 80,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 1640.5262000000005,
+            "lcp": 1761.3574999999998,
             "cls": 0.2241711367842551,
-            "tbt": 13
+            "tbt": 16.5
           },
           "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
         }
       ],
       "medianScores": {
-        "performance": 81,
+        "performance": 79,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100
       },
       "medianMetrics": {
-        "lcp": 1707.7024000000006,
+        "lcp": 1859.6520000000003,
         "cls": 0.2241711367842551,
-        "tbt": 37.5
+        "tbt": 19
       }
     }
   ]

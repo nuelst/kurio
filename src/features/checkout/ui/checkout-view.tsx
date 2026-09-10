@@ -54,7 +54,7 @@ export function CheckoutView(viewModel: CheckoutViewModel) {
         </nav>
       ) : (
         <MobileScreenHeader
-          title={mobileStep === 'profile' ? 'Perfil do colecionador' : 'Pagamento com carteira'}
+          title={mobileStep === 'profile' ? 'Pagamento' : 'Pagamento com carteira'}
           onBack={mobileStep === 'payment' ? () => setMobileStep('profile') : undefined}
         />
       )}

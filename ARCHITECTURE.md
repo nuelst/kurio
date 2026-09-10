@@ -60,6 +60,36 @@ Definida em `src/shared/lib/query-client.ts`:
 - `src/mocks/socket/socket-handlers.ts`: usa `@mswjs/socket.io-binding` sobre `ws.link('/')` — ver a nota detalhada em "Tempo real (Socket.IO)" sobre por que o padrão precisa **excluir** o prefixo `/socket.io/`. Guarda os clientes conectados para permitir broadcast de `nft.updated` a partir de qualquer handler/cenário (`broadcastNftUpdated`, usado por `mocks/dev-tools.ts`). **Limitação**: o binding não implementa rooms/namespaces do Socket.IO — irrelevante aqui pois cada usuário só recebe eventos dos seus próprios recursos ativos, filtrados no cliente.
 - Autenticação mockada (`src/mocks/auth.ts`) usa um esquema provisório de token (`token-<userId>`) emitido no login/cadastro; senhas são guardadas com hash (SHA-256 + sal fixo via `crypto.subtle`, síncrono o bastante para um mock — nunca em claro). O mesmo módulo resolve o "dono" do carrinho (`getCartOwnerId`): o `userId` do token quando autenticado, senão o header `X-Guest-Id` (ver seção Carrinho).
 
+## Contratos REST
+
+Toda chamada passa pelo `http` (`src/shared/lib/http.ts`), que normaliza qualquer erro em `ApiError { kind, status, message, fieldErrors? }` a partir do corpo `{ message, errors?: [{ field, message }] }` e do status HTTP — `kindFromStatus`: 401→`unauthorized`, 403→`forbidden`, 404→`not_found`, 409→`conflict`, 422→`validation`, ausente/5xx→`transient`. Os tipos de request/response já são o contrato (Zod nos schemas de formulário, interfaces TS no resto) — a tabela abaixo só mapeia recurso → endpoint → onde está o tipo, sem repetir os campos.
+
+| Recurso | Endpoint | Request → Response | Erros específicos |
+| --- | --- | --- | --- |
+| Sessão e conta | `POST /auth/register` | `SignupInput` (sem `confirmPassword`) → `AuthResponse` | 422 validação, 409 e-mail já cadastrado |
+| | `POST /auth/login` | `LoginInput` → `AuthResponse` | 401 credenciais inválidas |
+| | `POST /auth/logout` | — → `void` | — |
+| NFTs | `GET /nfts` | `CatalogSearch` (query params) → `CatalogPage` | — |
+| | `GET /nfts/:id` | — → `NftDetail` | 404 |
+| Favoritos | `GET /favorites` | — → `{ nftId }[]` | — |
+| | `POST /favorites` | `{ nftId }` → `void` | 403 (cenário `forbidden`) |
+| | `DELETE /favorites/:nftId` | — → `void` | — |
+| Carrinho | `GET /cart` | — → `CartQuote` | — |
+| | `POST /cart/items` | `{ nftId, quantity }` → `CartQuote` (201) | 404 NFT, 409 edição esgotada |
+| | `PATCH /cart/items/:nftId` | `{ quantity }` → `CartQuote` | 404 |
+| | `DELETE /cart/items/:nftId` | — → `CartQuote` | — |
+| | `POST /cart/coupon` | `{ code }` → `CartQuote` | 404 inválido, 410 expirado |
+| | `DELETE /cart/coupon` | — → `CartQuote` | — |
+| Pedidos | `POST /orders` | `CreateOrderInput` (inclui `idempotencyKey`) → `Order` | 409 mesma chave com payload diferente; timeout de 2.5s no client |
+| | `GET /orders/:orderId` | — → `Order` | 404 |
+| Perfil | `GET /profile` | — → `ProfileDetails` | — |
+| | `PATCH /profile` | `UpdateProfileInput` → `ProfileDetails` | 422 validação (inclui senha atual incorreta), 409 username/e-mail em uso |
+| Carteiras | `GET /wallets` | — → `WalletsResponse` | — |
+| | `PUT /wallets/:slot` | `Wallet` → `WalletsResponse` | 422 validação |
+| | `DELETE /wallets/:slot` | — → `WalletsResponse` | — |
+
+Não existe um endpoint dedicado de "consultar sessão": a sessão sobrevive a refresh via `sessionStore` persistido no `localStorage` (`zustand/persist`), não por uma chamada de rede — ver "Autenticação" abaixo.
+
 ## Autenticação
 
 - `src/features/auth/`: `model` (schemas Zod de login/cadastro + tipos de resposta), `api` (chamadas Axios), `viewmodel` (`useLoginForm`/`useSignupForm` com React Hook Form + Zod, `useLogout`), `ui` (`AuthModal`, `LoginForm`, `SignupForm`), `stores` (`authModalStore`, um Zustand só de UI — aberto/fechado + modo — separado do `sessionStore` em `shared/stores`, que guarda a identidade).
@@ -67,7 +97,7 @@ Definida em `src/shared/lib/query-client.ts`:
 - Erros do mock: 422 (campos inválidos, tratado majoritariamente no client via Zod antes de bater na API), 409 no cadastro (e-mail já cadastrado, mapeado para o campo `email` via `form.setError`), 401 no login (credenciais inválidas, mensagem genérica de propósito — não revela se o e-mail existe).
 - **Cuidado com o interceptor 401**: `shared/lib/http.ts` expira a sessão global (`sessionStore.getState().expire()`) em qualquer 401 — exceto nas próprias tentativas de `/auth/login` e `/auth/register` (que usam 401/409 para "essa tentativa falhou", não "sua sessão caducou") **e** exceto quando não havia sessão pra começo de conversa (`sessionStore.getState().user` precisa já existir) — um 401 anônimo (ex.: favoritar deslogado) só significa "isso exige login", não "sua sessão morreu". Sem a primeira exclusão, uma senha errada digitada por um usuário já logado derrubaria a sessão dele por engano; sem a segunda, o modal de "sua sessão expirou" (ver abaixo) abriria indevidamente pra quem nunca logou.
 - Login/cadastro bem-sucedidos: `sessionStore.authenticate()` grava token+usuário (persistido via `zustand/persist`), invalida `['catalog']` (favoritos dependem de quem está logado) e fecha o modal — não há redirect, então "retornar ao fluxo anterior" (seção 3 do enunciado) é automático, já que a modal só sobrepõe a página atual.
-- Logout (`useLogout`): chama `/auth/logout` (best-effort), limpa `sessionStore`, roda `resetSocket()` e invalida `['catalog']` — mesma lógica de "trocar de usuário", já que um novo login é só outro `authenticate()` por cima.
+- Logout (`useLogout`): chama `/auth/logout` (best-effort), limpa `sessionStore`, roda `resetSocket()` e faz `queryClient.clear()` — mesma lógica de "trocar de usuário", já que um novo login é só outro `authenticate()` por cima. **Bug real corrigido nesta fatia**: antes só invalidava `['catalog']`/`['cart']`; `['profile']` e `['wallets']` (dados privados, sem `userId` na key) continuavam no cache e `invalidateQueries` não os remove — só marca como stale, então continuam legíveis até o refetch resolver. Um usuário logando logo em seguida podia ver por um instante o perfil/carteiras do anterior. `queryClient.clear()` resolve isso sem precisar listar cada key sensível.
 - **Bug real encontrado e corrigido ao testar navegação por teclado: o foco não voltava pro botão que abriu o modal.** Fechar o modal (Escape, clique fora, X) deixava o foco em `<body>` em vez de devolvê-lo pro trigger — o comportamento automático do Radix Dialog de restaurar foco depende de rastrear qual elemento abriu o diálogo, e como o `AuthModal` é aberto por botões soltos pelo app via `authModalStore.getState().open()` (Zustand), não por um `<Dialog.Trigger>` do próprio Radix, não havia nada pro Radix restaurar. Corrigido rastreando manualmente: `authModalStore.open()` guarda `document.activeElement` em `triggerElement` no momento de abrir; `AuthModal` usa `onCloseAutoFocus` (com `event.preventDefault()` pra suprimir o comportamento padrão do Radix e evitar corrida entre os dois) pra focar esse elemento explicitamente ao fechar. Testado em `e2e/accessibility.spec.ts`.
 
 ## Detalhe do NFT

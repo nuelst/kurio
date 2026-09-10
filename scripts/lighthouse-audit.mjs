@@ -137,7 +137,7 @@ function formatMs(value) {
 }
 
 function formatCls(value) {
-  return value.toFixed(3)
+  return value === null ? 'n/a' : value.toFixed(3)
 }
 
 async function writeReportMd(results, environment) {

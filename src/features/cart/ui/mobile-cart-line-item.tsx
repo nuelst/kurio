@@ -18,8 +18,6 @@ export function MobileCartLineItem({
   onDecrement,
   onRemove,
 }: MobileCartLineItemProps) {
-  const isAtLimit = line.quantity >= line.available || line.isSoldOut
-
   return (
     <div className="flex gap-3 rounded-2xl bg-sidebar p-3" data-testid="cart-line">
       <Link to="/nfts/$nftId" params={{ nftId: line.nftId }} className="shrink-0">
@@ -51,6 +49,21 @@ export function MobileCartLineItem({
             ) : null}
           </div>
 
+          <button
+            type="button"
+            onClick={() => onRemove(line.nftId)}
+            aria-label={`Remover ${line.title} do carrinho`}
+            className="shrink-0 text-muted-foreground hover:text-destructive"
+          >
+            <Trash2 className="size-4" />
+          </button>
+        </div>
+
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <p className="text-sm font-bold text-[#E89B55]" data-testid="cart-line-total">
+            {formatEth(line.lineTotalEth)}
+          </p>
+
           <div className="flex shrink-0 items-center gap-2">
             <button
               type="button"
@@ -67,31 +80,17 @@ export function MobileCartLineItem({
             >
               {line.quantity}
             </span>
-            {isAtLimit ? (
-              <button
-                type="button"
-                onClick={() => onRemove(line.nftId)}
-                aria-label={`Remover ${line.title} do carrinho`}
-                className="flex size-6 items-center justify-center text-primary"
-              >
-                <Trash2 className="size-3.5" />
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => onIncrement(line)}
-                aria-label={`Aumentar quantidade de ${line.title}`}
-                className="flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground"
-              >
-                <Plus className="size-3" />
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => onIncrement(line)}
+              disabled={line.quantity >= line.available || line.isSoldOut}
+              aria-label={`Aumentar quantidade de ${line.title}`}
+              className="flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground disabled:opacity-50"
+            >
+              <Plus className="size-3" />
+            </button>
           </div>
         </div>
-
-        <p className="mt-2 text-sm font-bold text-[#E89B55]" data-testid="cart-line-total">
-          {formatEth(line.lineTotalEth)}
-        </p>
       </div>
     </div>
   )

@@ -12,8 +12,7 @@ export function useLogout() {
     try {
       await logoutRequest()
     } catch {
-      // Best-effort: the mock endpoint doesn't fail, but a client-side logout
-      // should still clear local session state even if the request did.
+      // ...
     }
     sessionStore.getState().clear()
     resetSocket()

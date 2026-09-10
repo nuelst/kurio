@@ -1,5 +1,5 @@
 import { expect, test } from './fixtures'
-import { login } from './helpers'
+import { login, skipToCheckoutPayment } from './helpers'
 
 test.describe('Confirmação de pedido — recibo e recuperação', () => {
   test('acesso sem login redireciona ao início e abre o modal de entrar', async ({ page }) => {
@@ -20,6 +20,7 @@ test.describe('Confirmação de pedido — recibo e recuperação', () => {
     await page.getByRole('button', { name: 'Comprar', exact: true }).click()
     await expect(page.getByText('adicionado ao carrinho')).toBeVisible()
     await page.goto('/checkout')
+    await skipToCheckoutPayment(page)
     await page.getByRole('radio').first().check()
     await expect(page.getByRole('button', { name: 'Desconectar' })).toBeVisible({
       timeout: 3000,
@@ -39,6 +40,7 @@ test.describe('Confirmação de pedido — recibo e recuperação', () => {
     await page.getByRole('button', { name: 'Comprar', exact: true }).click()
     await expect(page.getByText('adicionado ao carrinho')).toBeVisible()
     await page.goto('/checkout')
+    await skipToCheckoutPayment(page)
     await page.getByRole('radio').first().check()
     await expect(page.getByRole('button', { name: 'Desconectar' })).toBeVisible({
       timeout: 3000,
@@ -62,6 +64,7 @@ test.describe('Confirmação de pedido — recibo e recuperação', () => {
     await page.getByRole('button', { name: 'Comprar', exact: true }).click()
     await expect(page.getByText('adicionado ao carrinho')).toBeVisible()
     await page.goto('/checkout')
+    await skipToCheckoutPayment(page)
     await page.getByRole('radio').first().check()
     await expect(page.getByRole('button', { name: 'Desconectar' })).toBeVisible({
       timeout: 3000,
@@ -85,6 +88,7 @@ test.describe('Confirmação de pedido — recibo e recuperação', () => {
     await page.getByRole('button', { name: 'Comprar', exact: true }).click()
     await expect(page.getByText('adicionado ao carrinho')).toBeVisible()
     await page.goto('/checkout')
+    await skipToCheckoutPayment(page)
     await page.getByRole('radio').first().check()
     await expect(page.getByRole('button', { name: 'Desconectar' })).toBeVisible({
       timeout: 3000,
