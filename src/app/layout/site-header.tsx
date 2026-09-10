@@ -3,6 +3,7 @@ import { LogOut } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { authModalStore, useLogout } from '@/features/auth'
+import { useCartItemCount } from '@/features/cart'
 import { notImplementedToast } from '@/shared/lib/not-implemented'
 import { useSession } from '@/shared/stores/session-store'
 import { CartIcon, LoginIcon, SearchIcon } from '@/shared/ui/icons'
@@ -12,6 +13,7 @@ const secondaryNavItems = ['Mercado', 'Criadores', 'Aprenda']
 export function SiteHeader() {
   const user = useSession((state) => state.user)
   const logout = useLogout()
+  const cartItemCount = useCartItemCount()
 
   return (
     <header>
@@ -50,14 +52,18 @@ export function SiteHeader() {
           >
             <SearchIcon className="size-5" />
           </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label="Carrinho"
-            onClick={() => notImplementedToast('Carrinho')}
-          >
-            <CartIcon className="size-6" />
+          <Button asChild variant="ghost" size="icon" className="relative" aria-label="Carrinho">
+            <Link to="/cart">
+              <CartIcon className="size-6" />
+              {cartItemCount > 0 ? (
+                <span
+                  className="absolute top-0 right-0 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground"
+                  data-testid="cart-item-count"
+                >
+                  {cartItemCount}
+                </span>
+              ) : null}
+            </Link>
           </Button>
 
           {user ? (

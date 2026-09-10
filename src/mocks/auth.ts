@@ -4,6 +4,12 @@ export function getUserIdFromRequest(request: Request): string | null {
   return header.slice('Bearer token-'.length)
 }
 
+export function getCartOwnerId(request: Request): string {
+  const userId = getUserIdFromRequest(request)
+  if (userId) return userId
+  return request.headers.get('x-guest-id') ?? 'guest-unknown'
+}
+
 export function issueToken(userId: string): string {
   return `token-${userId}`
 }

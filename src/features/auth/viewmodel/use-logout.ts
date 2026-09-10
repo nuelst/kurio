@@ -18,6 +18,7 @@ export function useLogout() {
     sessionStore.getState().clear()
     resetSocket()
     queryClient.invalidateQueries({ queryKey: ['catalog'] })
+    queryClient.invalidateQueries({ queryKey: ['cart'] })
     toast('Você saiu da sua conta.')
   }
 }
