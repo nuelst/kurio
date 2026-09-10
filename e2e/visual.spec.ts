@@ -1,8 +1,5 @@
 import { expect, test } from './fixtures'
 
-// Regressão visual com baselines versionadas. Escopo deliberadamente pequeno e restrito a telas
-// estáticas/determinísticas (seed fixa, sem toasts/animações/timestamps visíveis) — screenshots
-// de página inteira são frágeis entre ambientes, então cada teste recorta só a região relevante.
 
 test.describe('Regressão visual', () => {
   test('grade do catálogo (Início)', async ({ page }) => {
