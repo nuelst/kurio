@@ -3,6 +3,7 @@ import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { SiteFooter } from '@/app/layout/site-footer'
 import { SiteHeader } from '@/app/layout/site-header'
 import { AuthModal } from '@/features/auth'
+import { useSocketReconnectReconciliation } from '@/shared/hooks/use-socket-reconnect-reconciliation'
 import { NotFound } from '@/shared/ui/not-found'
 
 export const Route = createRootRoute({
@@ -11,6 +12,8 @@ export const Route = createRootRoute({
 })
 
 function RootLayout() {
+  useSocketReconnectReconciliation()
+
   return (
     <div className="flex min-h-svh flex-col bg-background text-foreground">
       <a

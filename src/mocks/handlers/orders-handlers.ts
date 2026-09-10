@@ -1,4 +1,4 @@
-import { delay, HttpResponse, http } from 'msw'
+import { HttpResponse, http } from 'msw'
 
 import type {
   CreateOrderInput,
@@ -11,7 +11,11 @@ import { getUserIdFromRequest } from '@/mocks/auth'
 import { db, persistDb } from '@/mocks/db'
 import { buildQuote, clearCart } from '@/mocks/handlers/cart-handlers'
 import { getScenario } from '@/mocks/scenarios'
-import { broadcastNftUpdated } from '@/mocks/socket/socket-handlers'
+import { broadcastNftUpdated, broadcastOrderUpdated } from '@/mocks/socket/socket-handlers'
+
+const PROCESSING_MS = 1500
+
+type OrderRecord = NonNullable<ReturnType<typeof db.order.findFirst>>
 
 function unauthorized() {
   return HttpResponse.json({ message: 'Sessão inválida ou expirada.' }, { status: 401 })
@@ -24,10 +28,11 @@ function randomTxHash(): string {
     .join('')}`
 }
 
-function toOrder(record: { id: string; status: string; snapshot: string }): Order {
+function toOrder(record: { id: string; status: string; version: number; snapshot: string }): Order {
   return {
     id: record.id,
     status: record.status as OrderStatus,
+    version: record.version,
     snapshot: JSON.parse(record.snapshot) as OrderSnapshot,
   }
 }
@@ -50,15 +55,64 @@ function buildRequestFingerprint(body: CreateOrderInput): string {
   })
 }
 
+function resolveOrder(record: OrderRecord): OrderRecord {
+  if (record.status !== 'pending') return record
+  if (Date.now() < record.processingCompletesAt) return record
+
+  const isDeclined = getScenario() === 'declined'
+  const snapshot = JSON.parse(record.snapshot) as OrderSnapshot
+
+  if (!isDeclined) {
+    for (const item of snapshot.items) {
+      const edition = db.edition.findFirst({ where: { id: { equals: item.editionId } } })
+      if (!edition) continue
+
+      const available = Math.max(0, edition.available - item.quantity)
+      const version = edition.updatedVersion + 1
+      db.edition.update({
+        where: { id: { equals: edition.id } },
+        data: { available, updatedVersion: version },
+      })
+      broadcastNftUpdated({
+        id: item.nftId,
+        resource: 'nft',
+        version,
+        data: { nftId: item.nftId, editionId: edition.id, priceEth: edition.priceEth, available },
+      })
+    }
+    clearCart(record.userId)
+  }
+
+  const resolvedSnapshot: OrderSnapshot = {
+    ...snapshot,
+    txHash: isDeclined ? null : randomTxHash(),
+    confirmedAt: isDeclined ? null : new Date().toISOString(),
+  }
+  const status: OrderStatus = isDeclined ? 'declined' : 'confirmed'
+  const version = record.version + 1
+
+  db.order.update({
+    where: { id: { equals: record.id } },
+    data: { status, version, snapshot: JSON.stringify(resolvedSnapshot) },
+  })
+  persistDb()
+
+  broadcastOrderUpdated({
+    id: record.id,
+    resource: 'order',
+    version,
+    data: { orderId: record.id, status },
+  })
+
+  return db.order.findFirst({ where: { id: { equals: record.id } } }) ?? record
+}
+
 export const ordersHandlers = [
   http.post('/api/orders', async ({ request }) => {
     const userId = getUserIdFromRequest(request)
     if (!userId) return unauthorized()
 
-    if (getScenario() === 'latency') {
-      await delay(800 + Math.random() * 800)
-    }
-
+    const scenario = getScenario()
     const body = (await request.json()) as CreateOrderInput
     if (!body.idempotencyKey) {
       return HttpResponse.json({ message: 'idempotencyKey é obrigatório.' }, { status: 422 })
@@ -77,7 +131,7 @@ export const ordersHandlers = [
           { status: 409 },
         )
       }
-      return HttpResponse.json(toOrder(existing))
+      return HttpResponse.json(toOrder(resolveOrder(existing)))
     }
 
     const quote = buildQuote(userId)
@@ -109,7 +163,6 @@ export const ordersHandlers = [
     }
 
     const user = db.user.findFirst({ where: { id: { equals: userId } } })
-    const isDeclined = getScenario() === 'declined'
     const orderId = `order-${crypto.randomUUID()}`
 
     const snapshot: OrderSnapshot = {
@@ -131,8 +184,8 @@ export const ordersHandlers = [
         type: wallet.type as WalletProvider,
         address: wallet.address,
       },
-      txHash: randomTxHash(),
-      confirmedAt: new Date().toISOString(),
+      txHash: null,
+      confirmedAt: null,
     }
 
     db.order.create({
@@ -140,35 +193,25 @@ export const ordersHandlers = [
       userId,
       idempotencyKey: body.idempotencyKey,
       requestFingerprint: fingerprint,
-      status: isDeclined ? 'declined' : 'confirmed',
+      status: 'pending',
+      version: 1,
+      processingCompletesAt: Date.now() + PROCESSING_MS,
       snapshot: JSON.stringify(snapshot),
       createdAt: new Date().toISOString(),
     })
-
-    if (!isDeclined) {
-      for (const item of purchasable) {
-        const edition = db.edition.findFirst({ where: { id: { equals: item.editionId } } })
-        if (!edition) continue
-
-        const available = Math.max(0, edition.available - item.quantity)
-        const version = edition.updatedVersion + 1
-        db.edition.update({
-          where: { id: { equals: edition.id } },
-          data: { available, updatedVersion: version },
-        })
-        broadcastNftUpdated({
-          id: item.nftId,
-          resource: 'nft',
-          version,
-          data: { nftId: item.nftId, editionId: edition.id, priceEth: edition.priceEth, available },
-        })
-      }
-      clearCart(userId)
-    }
     persistDb()
+
+    setTimeout(() => {
+      const record = db.order.findFirst({ where: { id: { equals: orderId } } })
+      if (record) resolveOrder(record)
+    }, PROCESSING_MS)
 
     const created = db.order.findFirst({ where: { id: { equals: orderId } } })
     if (!created) return unauthorized()
+
+    if (scenario === 'timeout') {
+      await new Promise<never>(() => { })
+    }
 
     return HttpResponse.json(toOrder(created), { status: 201 })
   }),
@@ -182,6 +225,6 @@ export const ordersHandlers = [
     })
     if (!order) return HttpResponse.json({ message: 'Pedido não encontrado.' }, { status: 404 })
 
-    return HttpResponse.json(toOrder(order))
+    return HttpResponse.json(toOrder(resolveOrder(order)))
   }),
 ]
