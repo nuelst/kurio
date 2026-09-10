@@ -33,6 +33,13 @@ export function expireSession(userId: string): void {
   revokeSession(userId)
 }
 
+// unlike simulateNftUpdate, this never touches the mock "db" — it emits exactly the event object
+// given, version included, letting tests craft a stale/duplicate event on purpose to prove the
+// client's createEventVersionTracker actually rejects it (not just "happens to look right").
+export function broadcastRawNftUpdate(event: NftUpdatedEvent): void {
+  broadcastNftUpdated(event)
+}
+
 async function getSocket() {
   const { getSocket: get } = await import('@/shared/lib/socket')
   return get()

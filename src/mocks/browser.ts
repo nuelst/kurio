@@ -1,5 +1,6 @@
 import { setupWorker } from 'msw/browser'
 import {
+  broadcastRawNftUpdate,
   disconnectSocket,
   expireSession,
   reconnectSocket,
@@ -19,6 +20,7 @@ declare global {
       disconnectSocket: typeof disconnectSocket
       reconnectSocket: typeof reconnectSocket
       expireSession: typeof expireSession
+      broadcastRawNftUpdate: typeof broadcastRawNftUpdate
     }
   }
 }
@@ -35,5 +37,6 @@ export async function enableMocking(): Promise<void> {
     disconnectSocket,
     reconnectSocket,
     expireSession,
+    broadcastRawNftUpdate,
   }
 }
