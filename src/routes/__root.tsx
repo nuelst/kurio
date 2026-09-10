@@ -1,5 +1,6 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
 
+import { MobileTabBar } from '@/app/layout/mobile-tab-bar'
 import { SiteFooter } from '@/app/layout/site-footer'
 import { SiteHeader } from '@/app/layout/site-header'
 import { AuthModal } from '@/features/auth'
@@ -29,7 +30,9 @@ function RootLayout() {
         <Outlet />
       </main>
       <SiteFooter />
+      <div className="h-16 md:hidden" aria-hidden="true" />
       <AuthModal />
+      <MobileTabBar />
     </div>
   )
 }

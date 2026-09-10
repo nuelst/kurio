@@ -16,7 +16,7 @@ export function SiteHeader() {
   const cartItemCount = useCartItemCount()
 
   return (
-    <header>
+    <header className="hidden md:block">
       <div className="mx-auto flex h-16 max-w-page items-center justify-between gap-6 border-b-[3px] border-primary px-4 sm:px-6">
         <Link to="/" className="text-lg font-bold tracking-[0.2em] text-foreground">
           KURIO
