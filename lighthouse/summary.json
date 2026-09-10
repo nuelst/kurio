@@ -1,0 +1,335 @@
+{
+  "environment": {
+    "date": "2026-09-10T14:07:20.628Z",
+    "lighthouseVersion": "13.4.1",
+    "chromeVersion": "Google Chrome 152.0.7977.82",
+    "nodeVersion": "v24.13.1",
+    "os": "linux 7.0.0-31-generic",
+    "cpu": "11th Gen Intel(R) Core(TM) i5-1155G7 @ 2.50GHz",
+    "cpuCount": 8,
+    "ramGb": 15,
+    "loadAvg": "2.58, 2.09, 2.58"
+  },
+  "results": [
+    {
+      "page": {
+        "slug": "inicio",
+        "path": "/",
+        "label": "Início"
+      },
+      "profile": {
+        "slug": "mobile",
+        "label": "Mobile"
+      },
+      "runs": [
+        {
+          "run": 1,
+          "scores": {
+            "performance": 64,
+            "accessibility": 95,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "lcp": 4923.947625000001,
+            "cls": 0.0007734549903305942,
+            "tbt": 507.9999999999999
+          },
+          "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
+        },
+        {
+          "run": 2,
+          "scores": {
+            "performance": 66,
+            "accessibility": 95,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "lcp": 4605.4151999999995,
+            "cls": 0.0007734549903305942,
+            "tbt": 501.4999999999998
+          },
+          "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
+        },
+        {
+          "run": 3,
+          "scores": {
+            "performance": 64,
+            "accessibility": 95,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "lcp": 4911.063700000001,
+            "cls": 0.0007734549903305942,
+            "tbt": 489
+          },
+          "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
+        }
+      ],
+      "medianScores": {
+        "performance": 64,
+        "accessibility": 95,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "medianMetrics": {
+        "lcp": 4911.063700000001,
+        "cls": 0.0007734549903305942,
+        "tbt": 501.4999999999998
+      }
+    },
+    {
+      "page": {
+        "slug": "inicio",
+        "path": "/",
+        "label": "Início"
+      },
+      "profile": {
+        "slug": "desktop",
+        "label": "Desktop",
+        "config": {
+          "extends": "lighthouse:default",
+          "settings": {
+            "formFactor": "desktop",
+            "throttling": {
+              "rttMs": 40,
+              "throughputKbps": 10240,
+              "cpuSlowdownMultiplier": 1,
+              "requestLatencyMs": 0,
+              "downloadThroughputKbps": 0,
+              "uploadThroughputKbps": 0
+            },
+            "screenEmulation": {
+              "mobile": false,
+              "width": 1350,
+              "height": 940,
+              "deviceScaleFactor": 1,
+              "disabled": false
+            },
+            "emulatedUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+          }
+        }
+      },
+      "runs": [
+        {
+          "run": 1,
+          "scores": {
+            "performance": 95,
+            "accessibility": 95,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "lcp": 1443.7324000000003,
+            "cls": 0.00018883758438456826,
+            "tbt": 60.99999999999994
+          },
+          "clsCause": null
+        },
+        {
+          "run": 2,
+          "scores": {
+            "performance": 95,
+            "accessibility": 95,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "lcp": 1387.0567499999997,
+            "cls": 0.00018883758438456826,
+            "tbt": 57.50000000000006
+          },
+          "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
+        },
+        {
+          "run": 3,
+          "scores": {
+            "performance": 95,
+            "accessibility": 95,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "lcp": 1445.3532249999998,
+            "cls": 0.00018883758438456826,
+            "tbt": 43.5
+          },
+          "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
+        }
+      ],
+      "medianScores": {
+        "performance": 95,
+        "accessibility": 95,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "medianMetrics": {
+        "lcp": 1443.7324000000003,
+        "cls": 0.00018883758438456826,
+        "tbt": 57.50000000000006
+      }
+    },
+    {
+      "page": {
+        "slug": "detalhe-nft",
+        "path": "/nfts/nft-3",
+        "label": "Detalhe do NFT (nft-3)"
+      },
+      "profile": {
+        "slug": "mobile",
+        "label": "Mobile"
+      },
+      "runs": [
+        {
+          "run": 1,
+          "scores": {
+            "performance": 63,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "lcp": 5223.1457,
+            "cls": 0,
+            "tbt": 497.5
+          },
+          "clsCause": null
+        },
+        {
+          "run": 2,
+          "scores": {
+            "performance": 66,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "lcp": 5109.73725,
+            "cls": 0,
+            "tbt": 414.5
+          },
+          "clsCause": null
+        },
+        {
+          "run": 3,
+          "scores": {
+            "performance": 60,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "lcp": 5403.642799999999,
+            "cls": 0,
+            "tbt": 550.8016
+          },
+          "clsCause": null
+        }
+      ],
+      "medianScores": {
+        "performance": 63,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "medianMetrics": {
+        "lcp": 5223.1457,
+        "cls": 0,
+        "tbt": 497.5
+      }
+    },
+    {
+      "page": {
+        "slug": "detalhe-nft",
+        "path": "/nfts/nft-3",
+        "label": "Detalhe do NFT (nft-3)"
+      },
+      "profile": {
+        "slug": "desktop",
+        "label": "Desktop",
+        "config": {
+          "extends": "lighthouse:default",
+          "settings": {
+            "formFactor": "desktop",
+            "throttling": {
+              "rttMs": 40,
+              "throughputKbps": 10240,
+              "cpuSlowdownMultiplier": 1,
+              "requestLatencyMs": 0,
+              "downloadThroughputKbps": 0,
+              "uploadThroughputKbps": 0
+            },
+            "screenEmulation": {
+              "mobile": false,
+              "width": 1350,
+              "height": 940,
+              "deviceScaleFactor": 1,
+              "disabled": false
+            },
+            "emulatedUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+          }
+        }
+      },
+      "runs": [
+        {
+          "run": 1,
+          "scores": {
+            "performance": 70,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "lcp": 2511.8310999999994,
+            "cls": 0.2241711367842551,
+            "tbt": 81.99999999999977
+          },
+          "clsCause": null
+        },
+        {
+          "run": 2,
+          "scores": {
+            "performance": 81,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "lcp": 1707.7024000000006,
+            "cls": 0.2241711367842551,
+            "tbt": 37.5
+          },
+          "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
+        },
+        {
+          "run": 3,
+          "scores": {
+            "performance": 82,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "lcp": 1640.5262000000005,
+            "cls": 0.2241711367842551,
+            "tbt": 13
+          },
+          "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
+        }
+      ],
+      "medianScores": {
+        "performance": 81,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "medianMetrics": {
+        "lcp": 1707.7024000000006,
+        "cls": 0.2241711367842551,
+        "tbt": 37.5
+      }
+    }
+  ]
+}
