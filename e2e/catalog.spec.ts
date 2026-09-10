@@ -58,4 +58,35 @@ test.describe('Catálogo — busca, filtros, ordenação, paginação e históri
     await page.getByLabel('Buscar NFTs').fill('nft-que-nao-existe-em-nenhum-lugar')
     await expect(page.getByText('Nenhum NFT encontrado')).toBeVisible()
   })
+
+  test('loading lento mostra skeleton e dá lugar ao conteúdo real quando os dados chegam', async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('nft-marketplace.scenario', 'latency')
+    })
+    await page.goto('/')
+
+    await expect(page.getByRole('status', { name: 'Carregando NFTs' })).toBeVisible()
+    await expect(page.getByTestId('nft-card').first()).toBeVisible({ timeout: 5000 })
+    await expect(page.getByRole('status', { name: 'Carregando NFTs' })).not.toBeVisible()
+  })
+
+  test('erro ao carregar mostra estado de erro e recupera ao tentar de novo', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('nft-marketplace.scenario', 'error')
+    })
+    await page.goto('/')
+
+    await expect(page.getByText('Não foi possível carregar o catálogo')).toBeVisible()
+    const retry = page.getByRole('button', { name: 'Tentar novamente' })
+    await expect(retry).toBeVisible()
+    await expect(page.getByTestId('nft-card')).toHaveCount(0)
+
+    await page.evaluate(() => localStorage.removeItem('nft-marketplace.scenario'))
+    await retry.click()
+
+    await expect(page.getByText('Não foi possível carregar o catálogo')).not.toBeVisible()
+    await expect(page.getByTestId('nft-card').first()).toBeVisible()
+  })
 })
