@@ -55,6 +55,8 @@ export const db = factory({
     idempotencyKey: String,
     requestFingerprint: String,
     status: String,
+    version: Number,
+    processingCompletesAt: Number,
     snapshot: String,
     createdAt: String,
   },

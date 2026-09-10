@@ -2,12 +2,7 @@ import type { NftUpdatedEvent } from '@/features/catalog/model/nft'
 import { db, persistDb } from '@/mocks/db'
 import { broadcastNftUpdated } from '@/mocks/socket/socket-handlers'
 
-/**
- * Demo/test-only hook exposed on `window.__mocks__` (see `enableMocking`). Lets DevTools or
- * Playwright simulate the "price/availability changes while the cart/catalog is open" scenario
- * from section 7 of the challenge — it mutates the mock db (so REST refetches stay consistent)
- * and broadcasts the same `nft.updated` event real reconciliation would receive.
- */
+
 export function simulateNftUpdate(
   nftId: string,
   changes: { priceEth?: string; available?: number },
@@ -32,4 +27,25 @@ export function simulateNftUpdate(
     data: { nftId, editionId: edition.id, priceEth, available },
   }
   broadcastNftUpdated(event)
+}
+
+async function getSocket() {
+  const { getSocket: get } = await import('@/shared/lib/socket')
+  return get()
+}
+
+export async function simulateSocketReconnect(): Promise<void> {
+  const socket = await getSocket()
+  socket.disconnect()
+  socket.connect()
+}
+
+export async function disconnectSocket(): Promise<void> {
+  const socket = await getSocket()
+  socket.disconnect()
+}
+
+export async function reconnectSocket(): Promise<void> {
+  const socket = await getSocket()
+  socket.connect()
 }
