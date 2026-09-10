@@ -57,7 +57,7 @@ export function NftDetailView(viewModel: NftDetailViewModel) {
 
       {!isLoading && !isError && nft ? (
         <>
-          <div className="flex flex-col gap-10 lg:flex-row">
+          <div data-testid="nft-detail-main" className="flex flex-col gap-10 lg:flex-row">
             <NftGallery
               title={nft.title}
               images={nft.gallery}
