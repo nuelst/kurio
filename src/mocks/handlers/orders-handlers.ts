@@ -210,7 +210,7 @@ export const ordersHandlers = [
     if (!created) return unauthorized()
 
     if (scenario === 'timeout') {
-      await new Promise<never>(() => { })
+      await new Promise<never>(() => {})
     }
 
     return HttpResponse.json(toOrder(created), { status: 201 })

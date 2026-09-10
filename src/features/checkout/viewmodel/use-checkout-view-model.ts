@@ -88,6 +88,13 @@ export function useCheckoutViewModel() {
         toast('Não foi possível confirmar o pedido', { description: error.message })
         return
       }
+      if (error.kind === 'transient' && error.status === null) {
+        collectorForm.setError('root', {
+          message:
+            'Não foi possível confirmar se o pedido foi recebido. Tente confirmar novamente — não será cobrado em duplicidade.',
+        })
+        return
+      }
       collectorForm.setError('root', { message: error.message })
     },
   })

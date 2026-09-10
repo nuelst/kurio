@@ -1,6 +1,7 @@
 import { OrderConfirmedCard } from '@/features/orders/ui/order-confirmed-card'
 import { OrderDeclinedCard } from '@/features/orders/ui/order-declined-card'
 import { OrderNotFound } from '@/features/orders/ui/order-not-found'
+import { OrderPendingCard } from '@/features/orders/ui/order-pending-card'
 import { OrderSkeleton } from '@/features/orders/ui/order-skeleton'
 import type { useOrderViewModel } from '@/features/orders/viewmodel/use-order-view-model'
 import { ErrorState } from '@/shared/ui/error-state'
@@ -21,6 +22,8 @@ export function OrderView({ order, isLoading, isError, error, refetch }: OrderVi
           onRetry={() => refetch()}
         />
       ) : null}
+
+      {!isLoading && !isError && order?.status === 'pending' ? <OrderPendingCard /> : null}
 
       {!isLoading && !isError && order?.status === 'confirmed' ? (
         <OrderConfirmedCard snapshot={order.snapshot} />

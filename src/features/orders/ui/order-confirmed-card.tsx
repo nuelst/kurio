@@ -19,7 +19,9 @@ function truncateHash(hash: string): string {
 }
 
 export function OrderConfirmedCard({ snapshot }: { snapshot: OrderSnapshot }) {
-  const explorerUrl = `https://etherscan.io/tx/${snapshot.txHash}`
+  const txHash = snapshot.txHash ?? ''
+  const confirmedAt = snapshot.confirmedAt ?? new Date().toISOString()
+  const explorerUrl = `https://etherscan.io/tx/${txHash}`
 
   return (
     <div className="mx-auto w-full max-w-xl rounded-2xl border border-primary bg-card p-8">
@@ -39,11 +41,11 @@ export function OrderConfirmedCard({ snapshot }: { snapshot: OrderSnapshot }) {
       <div className="mt-6 grid grid-cols-2 gap-4 border-t border-b border-border py-4 text-sm sm:grid-cols-4">
         <div>
           <dt className="text-xs text-muted-foreground">ID da transação</dt>
-          <dd className="text-foreground">{truncateHash(snapshot.txHash)}</dd>
+          <dd className="text-foreground">{truncateHash(txHash)}</dd>
         </div>
         <div>
           <dt className="text-xs text-muted-foreground">Data</dt>
-          <dd className="text-foreground">{formatOrderDate(snapshot.confirmedAt)}</dd>
+          <dd className="text-foreground">{formatOrderDate(confirmedAt)}</dd>
         </div>
         <div>
           <dt className="text-xs text-muted-foreground">Total</dt>
