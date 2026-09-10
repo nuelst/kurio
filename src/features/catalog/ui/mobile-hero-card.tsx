@@ -10,7 +10,10 @@ export function MobileHeroCard() {
       <div
         className="relative overflow-hidden rounded-[30px] px-5 py-6"
         style={{
-          backgroundImage: `url(${mobileHeroBg})`,
+          // aspas duplas propositais: o Vite exporta SVGs pequenos como data URI URL-encoded
+          // preservando aspas simples literais nos atributos (ex.: width='366') — um url() sem
+          // aspas quebra ao encontrar essas aspas simples no meio do valor.
+          backgroundImage: `url("${mobileHeroBg}")`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}

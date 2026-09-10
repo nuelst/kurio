@@ -1,3 +1,5 @@
+import type { EditionTier } from '@/features/nft-detail/model/nft-detail'
+
 export const CART_NETWORK_FEE_ETH = '0.016'
 
 export interface CartLine {
@@ -6,6 +8,7 @@ export interface CartLine {
   title: string
   imageUrl: string
   tokenNumber: string
+  editionTier: EditionTier
   priceEth: string
   available: number
   quantity: number

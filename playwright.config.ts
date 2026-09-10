@@ -25,9 +25,6 @@ export default defineConfig({
     {
       name: 'chromium-mobile',
       use: { ...devices['Pixel 7'] },
-      // auth.spec.ts e accessibility.spec.ts testam especificamente o SiteHeader (login/logout
-      // refletidos nele, foco do botão "Entrar") — esse header só existe em desktop/tablet
-      // (md:block), substituído pela tab bar inferior no mobile por design, não por omissão.
       testIgnore: /responsive-tablet\.spec\.ts|auth\.spec\.ts|accessibility\.spec\.ts/,
     },
     {

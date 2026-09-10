@@ -1,11 +1,13 @@
 import { Link } from '@tanstack/react-router'
 
+import { MobileNftGallery } from '@/features/nft-detail/ui/mobile-nft-gallery'
 import { NftDetailSkeleton } from '@/features/nft-detail/ui/nft-detail-skeleton'
 import { NftDetailTabs } from '@/features/nft-detail/ui/nft-detail-tabs'
 import { NftGallery } from '@/features/nft-detail/ui/nft-gallery'
 import { NftNotFound } from '@/features/nft-detail/ui/nft-not-found'
 import { NftPurchasePanel } from '@/features/nft-detail/ui/nft-purchase-panel'
 import type { useNftDetailViewModel } from '@/features/nft-detail/viewmodel/use-nft-detail-view-model'
+import { useMediaQuery } from '@/shared/hooks/use-media-query'
 import { ErrorState } from '@/shared/ui/error-state'
 import { RelatedNfts } from '@/shared/ui/related-nfts'
 
@@ -33,15 +35,26 @@ export function NftDetailView(viewModel: NftDetailViewModel) {
     isRelatedLoading,
   } = viewModel
 
+  const isDesktopOrTablet = useMediaQuery('(min-width: 640px)')
+
   return (
-    <section className="mx-auto max-w-page px-4 py-8 sm:px-6">
-      <nav aria-label="Breadcrumb" className="mb-6 text-sm text-muted-foreground">
-        <Link to="/" className="hover:text-primary">
-          Início
-        </Link>
-        <span className="mx-2">/</span>
-        <span>Mercado</span>
-      </nav>
+    <section
+      className="mx-auto max-w-page px-7 py-8 sm:px-6"
+      style={
+        !isDesktopOrTablet
+          ? { background: 'linear-gradient(143.28deg, #241612 -12%, #2F1D15 106.59%)' }
+          : undefined
+      }
+    >
+      {isDesktopOrTablet ? (
+        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-muted-foreground">
+          <Link to="/" className="hover:text-primary">
+            Início
+          </Link>
+          <span className="mx-2">/</span>
+          <span>Mercado</span>
+        </nav>
+      ) : null}
 
       {isLoading ? <NftDetailSkeleton /> : null}
 
@@ -58,12 +71,23 @@ export function NftDetailView(viewModel: NftDetailViewModel) {
       {!isLoading && !isError && nft ? (
         <>
           <div data-testid="nft-detail-main" className="flex flex-col gap-10 lg:flex-row">
-            <NftGallery
-              title={nft.title}
-              images={nft.gallery}
-              selectedIndex={selectedImageIndex}
-              onSelect={setSelectedImageIndex}
-            />
+            {isDesktopOrTablet ? (
+              <NftGallery
+                title={nft.title}
+                images={nft.gallery}
+                selectedIndex={selectedImageIndex}
+                onSelect={setSelectedImageIndex}
+              />
+            ) : (
+              <MobileNftGallery
+                title={nft.title}
+                images={nft.gallery}
+                selectedIndex={selectedImageIndex}
+                onSelect={setSelectedImageIndex}
+                isFavorite={nft.isFavorite}
+                onToggleFavorite={() => toggleFavoriteFor(nft)}
+              />
+            )}
             <NftPurchasePanel
               title={nft.title}
               priceEth={nft.edition.priceEth}

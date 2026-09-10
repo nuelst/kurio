@@ -30,7 +30,7 @@ function RootLayout() {
         <Outlet />
       </main>
       <SiteFooter />
-      <div className="h-16 md:hidden" aria-hidden="true" />
+      <div className="h-[95px] md:hidden" aria-hidden="true" />
       <AuthModal />
       <MobileTabBar />
     </div>

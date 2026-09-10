@@ -1,4 +1,5 @@
 import type { NftSummary } from '@/features/catalog/model/nft'
+import type { EditionTier } from '@/features/nft-detail/model/nft-detail'
 
 interface NftRecord {
   id: string
@@ -19,6 +20,13 @@ interface EditionRecord {
 export function tokenNumberFor(nftId: string): string {
   const seq = Number(nftId.slice(4))
   return String((seq * 71 + 13) % 9999).padStart(4, '0')
+}
+
+export function editionTierFor(totalSupply: number): EditionTier {
+  if (totalSupply <= 1) return '1/1'
+  if (totalSupply <= 10) return '1/10'
+  if (totalSupply <= 50) return '1/50'
+  return 'Aberta'
 }
 
 export function toNftSummary(

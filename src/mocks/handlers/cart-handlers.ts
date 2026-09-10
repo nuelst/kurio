@@ -4,7 +4,7 @@ import { recomputeQuote } from '@/features/cart/lib/cart-quote'
 import type { CartCoupon, CartLine, CartQuote } from '@/features/cart/model/cart'
 import { getCartOwnerId } from '@/mocks/auth'
 import { db, persistDb } from '@/mocks/db'
-import { tokenNumberFor } from '@/mocks/handlers/nft-mapper'
+import { editionTierFor, tokenNumberFor } from '@/mocks/handlers/nft-mapper'
 import { getScenario } from '@/mocks/scenarios'
 import { multiply } from '@/shared/lib/money'
 
@@ -43,6 +43,7 @@ export function buildQuote(ownerId: string): CartQuote {
       title: nft.title,
       imageUrl: nft.imageUrl,
       tokenNumber: tokenNumberFor(nft.id),
+      editionTier: editionTierFor(edition.totalSupply),
       priceEth: edition.priceEth,
       available: edition.available,
       quantity,

@@ -3,7 +3,7 @@ import type { NftDetail, NftReview } from '@/features/nft-detail/model/nft-detai
 import { getUserIdFromRequest } from '@/mocks/auth'
 import { db } from '@/mocks/db'
 import { nftArtworks } from '@/mocks/fixtures/nft-artworks'
-import { tokenNumberFor, toNftSummary } from '@/mocks/handlers/nft-mapper'
+import { editionTierFor, tokenNumberFor, toNftSummary } from '@/mocks/handlers/nft-mapper'
 import { getScenario } from '@/mocks/scenarios'
 
 const accessories = ['Óculos', 'Chapéu', 'Fone de ouvido', 'Colar', 'Boné', 'Jaqueta']
@@ -25,13 +25,6 @@ function pick<T>(items: readonly T[], index: number): T {
   const value = items[index % items.length]
   if (value === undefined) throw new Error('pick() called with an empty array')
   return value
-}
-
-function editionTierFor(totalSupply: number): NftDetail['editionTier'] {
-  if (totalSupply <= 1) return '1/1'
-  if (totalSupply <= 10) return '1/10'
-  if (totalSupply <= 50) return '1/50'
-  return 'Aberta'
 }
 
 function buildReviews(seq: number, count: number): NftReview[] {
