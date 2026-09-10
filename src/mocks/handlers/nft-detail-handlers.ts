@@ -3,7 +3,7 @@ import type { NftDetail, NftReview } from '@/features/nft-detail/model/nft-detai
 import { getUserIdFromRequest } from '@/mocks/auth'
 import { db } from '@/mocks/db'
 import { nftArtworks } from '@/mocks/fixtures/nft-artworks'
-import { toNftSummary } from '@/mocks/handlers/nft-mapper'
+import { tokenNumberFor, toNftSummary } from '@/mocks/handlers/nft-mapper'
 import { getScenario } from '@/mocks/scenarios'
 
 const accessories = ['Óculos', 'Chapéu', 'Fone de ouvido', 'Colar', 'Boné', 'Jaqueta']
@@ -73,7 +73,7 @@ export const nftDetailHandlers = [
     const seq = sequenceOf(id)
     const summary = toNftSummary(nft, edition, isFavorite)
     const attributes = [pick(accessories, seq), pick(materials, seq + 1), pick(rarities, seq + 2)]
-    const tokenNumber = String((seq * 71 + 13) % 9999).padStart(4, '0')
+    const tokenNumber = tokenNumberFor(id)
     const contractAddress = `0x${(seq * 104729).toString(16).padStart(8, '0')}...${tokenNumber}`
     const rating = 4 + (seq % 10) / 10
     const reviewCount = 5 + (seq % 40)

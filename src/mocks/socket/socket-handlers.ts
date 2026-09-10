@@ -3,7 +3,7 @@ import { ws } from 'msw'
 
 import type { NftUpdatedEvent } from '@/features/catalog/model/nft'
 
-const realtime = ws.link('*/socket.io/*')
+const realtime = ws.link('/')
 
 type SocketIoClient = ReturnType<typeof toSocketIo>['client']
 
@@ -11,6 +11,7 @@ const activeClients = new Set<SocketIoClient>()
 
 export const socketHandlers = [
   realtime.addEventListener('connection', (connection) => {
+    console.log('DEBUG5 ws connection handler fired', connection.client.url)
     const { client } = toSocketIo(connection)
     activeClients.add(client)
 

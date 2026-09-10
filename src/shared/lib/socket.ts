@@ -2,6 +2,8 @@ import { io, type Socket } from 'socket.io-client'
 
 import { sessionStore } from '@/shared/stores/session-store'
 
+console.log('DEBUG4 socket.ts module body running', window.WebSocket.toString().slice(0, 30))
+
 let socket: Socket | null = null
 
 export function getSocket(): Socket {
