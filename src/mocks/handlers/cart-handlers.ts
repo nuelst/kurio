@@ -19,7 +19,7 @@ function getActiveCoupon(ownerId: string): CartCoupon | null {
   return { code: coupon.code, discountPercent: coupon.discountPercent }
 }
 
-function buildQuote(ownerId: string): CartQuote {
+export function buildQuote(ownerId: string): CartQuote {
   const cartItems = db.cartItem.findMany({ where: { cartOwnerId: { equals: ownerId } } })
   let mutated = false
 
@@ -98,6 +98,17 @@ export function mergeGuestCart(guestId: string | null, userId: string): void {
 
 function notFound(message: string) {
   return HttpResponse.json({ message }, { status: 404 })
+}
+
+/** Called after an order is confirmed — every item in the cart was just purchased in one go. */
+export function clearCart(ownerId: string): void {
+  const items = db.cartItem.findMany({ where: { cartOwnerId: { equals: ownerId } } })
+  for (const item of items) {
+    db.cartItem.delete({ where: { id: { equals: item.id } } })
+  }
+  const coupon = db.cartCoupon.findFirst({ where: { id: { equals: ownerId } } })
+  if (coupon) db.cartCoupon.delete({ where: { id: { equals: ownerId } } })
+  persistDb()
 }
 
 export const cartHandlers = [
