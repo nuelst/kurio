@@ -2,7 +2,6 @@ import type { NftUpdatedEvent } from '@/features/catalog/model/nft'
 import { db, persistDb } from '@/mocks/db'
 import { broadcastNftUpdated } from '@/mocks/socket/socket-handlers'
 
-
 export function simulateNftUpdate(
   nftId: string,
   changes: { priceEth?: string; available?: number },

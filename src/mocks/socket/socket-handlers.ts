@@ -4,7 +4,6 @@ import { ws } from 'msw'
 import type { NftUpdatedEvent } from '@/features/catalog/model/nft'
 import type { OrderUpdatedEvent } from '@/features/checkout/model/checkout'
 
-
 const realtime = ws.link('/')
 
 type SocketIoClient = ReturnType<typeof toSocketIo>['client']
