@@ -82,6 +82,13 @@ export function useCheckoutViewModel() {
       navigate({ to: '/orders/$orderId', params: { orderId: order.id } })
     },
     onError: (error) => {
+      if (error.kind === 'unauthorized') {
+        collectorForm.setError('root', {
+          message:
+            'Sua sessão expirou. Faça login novamente — os dados preenchidos aqui serão mantidos.',
+        })
+        return
+      }
       if (error.status === 409) {
         renewIdempotencyKey()
         queryClient.invalidateQueries({ queryKey: ['cart'] })

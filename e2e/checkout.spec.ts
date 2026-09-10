@@ -269,4 +269,49 @@ test.describe('Pagamento e confirmação de pedido', () => {
     // exactly one unit was purchased — the hung first attempt never bought a second one
     expect(availableBefore - availableAfter).toBe(1)
   })
+
+  test('sessão expira ao confirmar a compra: contexto do formulário sobrevive ao login novamente', async ({
+    page,
+  }) => {
+    await login(page)
+    await addToCartAndGoToCheckout(page)
+
+    const note = 'Entregar com cuidado, é para presente.'
+    await page.getByPlaceholder('Alguma instrução especial para este pedido?').fill(note)
+    await page.getByRole('radio').first().check()
+    await expect(page.getByRole('button', { name: 'Desconectar' })).toBeVisible({
+      timeout: 3000,
+    })
+
+    await page.evaluate(() => {
+      const session = JSON.parse(localStorage.getItem('nft-marketplace.session') ?? '{}')
+      const userId = session?.state?.accessToken?.replace('token-', '')
+      window.__mocks__?.expireSession(userId)
+    })
+
+    await page.getByRole('button', { name: 'Confirmar compra' }).click()
+
+    // the login modal reopens on top of checkout — never a redirect, never unmounting the form
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+    await expect(page.getByText('Sua sessão expirou')).toBeVisible()
+    await expect(page).toHaveURL(/\/checkout$/)
+
+    await dialog.getByPlaceholder('contato@email.com').fill('ana@example.com')
+    await dialog.getByPlaceholder('Senha', { exact: true }).fill('demo1234')
+    await dialog.locator('button[type=submit]').click()
+    await expect(dialog).not.toBeVisible()
+
+    // context preserved: note, wallet connection and cart are exactly as left before expiring
+    await expect(page.getByPlaceholder('Alguma instrução especial para este pedido?')).toHaveValue(
+      note,
+    )
+    await expect(page.getByRole('button', { name: 'Desconectar' })).toBeVisible()
+
+    await page.getByRole('button', { name: 'Confirmar compra' }).click()
+    await expect(page).toHaveURL(/\/orders\//, { timeout: 5000 })
+    await expect(page.getByText('Seus NFTs agora estão na sua carteira')).toBeVisible({
+      timeout: 5000,
+    })
+  })
 })

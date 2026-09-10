@@ -1,4 +1,5 @@
 import type { NftUpdatedEvent } from '@/features/catalog/model/nft'
+import { revokeSession } from '@/mocks/auth'
 import { db, persistDb } from '@/mocks/db'
 import { broadcastNftUpdated } from '@/mocks/socket/socket-handlers'
 
@@ -26,6 +27,10 @@ export function simulateNftUpdate(
     data: { nftId, editionId: edition.id, priceEth, available },
   }
   broadcastNftUpdated(event)
+}
+
+export function expireSession(userId: string): void {
+  revokeSession(userId)
 }
 
 async function getSocket() {

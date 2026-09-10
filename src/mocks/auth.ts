@@ -1,7 +1,19 @@
+const revokedUserIds = new Set<string>()
+
+export function revokeSession(userId: string): void {
+  revokedUserIds.add(userId)
+}
+
+export function restoreSession(userId: string): void {
+  revokedUserIds.delete(userId)
+}
+
 export function getUserIdFromRequest(request: Request): string | null {
   const header = request.headers.get('authorization')
   if (!header?.startsWith('Bearer token-')) return null
-  return header.slice('Bearer token-'.length)
+  const userId = header.slice('Bearer token-'.length)
+  if (revokedUserIds.has(userId)) return null
+  return userId
 }
 
 export function getCartOwnerId(request: Request): string {

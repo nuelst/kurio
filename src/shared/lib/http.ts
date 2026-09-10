@@ -87,7 +87,7 @@ http.interceptors.response.use(
   (error: AxiosError) => {
     const apiError = toApiError(error)
     const isAuthAttempt = AUTH_ATTEMPT_PATHS.some((path) => error.config?.url?.includes(path))
-    if (apiError.kind === 'unauthorized' && !isAuthAttempt) {
+    if (apiError.kind === 'unauthorized' && !isAuthAttempt && sessionStore.getState().user) {
       sessionStore.getState().expire()
     }
     return Promise.reject(apiError)

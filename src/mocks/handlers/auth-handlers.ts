@@ -6,6 +6,7 @@ import {
   getUserIdFromRequest,
   hashPassword,
   issueToken,
+  restoreSession,
   verifyPassword,
 } from '@/mocks/auth'
 import { db, persistDb } from '@/mocks/db'
@@ -106,6 +107,7 @@ export const authHandlers = [
     if (!passwordMatches) return invalidCredentials()
 
     mergeGuestCart(request.headers.get('x-guest-id'), user.id)
+    restoreSession(user.id)
 
     const response: AuthResponse = { user: toAuthUser(user), accessToken: issueToken(user.id) }
     return HttpResponse.json(response)

@@ -1,6 +1,7 @@
 import { setupWorker } from 'msw/browser'
 import {
   disconnectSocket,
+  expireSession,
   reconnectSocket,
   simulateNftUpdate,
   simulateSocketReconnect,
@@ -17,6 +18,7 @@ declare global {
       simulateSocketReconnect: typeof simulateSocketReconnect
       disconnectSocket: typeof disconnectSocket
       reconnectSocket: typeof reconnectSocket
+      expireSession: typeof expireSession
     }
   }
 }
@@ -32,5 +34,6 @@ export async function enableMocking(): Promise<void> {
     simulateSocketReconnect,
     disconnectSocket,
     reconnectSocket,
+    expireSession,
   }
 }
