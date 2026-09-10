@@ -30,7 +30,7 @@ export function MobileNftGallery({
           type="button"
           onClick={() => router.history.back()}
           aria-label="Voltar"
-          className="flex size-9 shrink-0 items-center justify-center rounded-full bg-sidebar text-muted-foreground"
+          className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/10 text-foreground backdrop-blur-sm"
         >
           <ChevronLeft className="size-5" />
         </button>
@@ -39,7 +39,7 @@ export function MobileNftGallery({
           type="button"
           onClick={onToggleFavorite}
           aria-label={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
-          className="flex size-9 shrink-0 items-center justify-center rounded-full bg-sidebar text-muted-foreground"
+          className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/10 text-foreground backdrop-blur-sm"
         >
           <Heart className={cn('size-4', isFavorite && 'fill-current text-destructive')} />
         </button>
