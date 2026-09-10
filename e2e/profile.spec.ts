@@ -1,14 +1,5 @@
 import { expect, test } from './fixtures'
-
-async function login(page: import('@playwright/test').Page, email = 'ana@example.com') {
-  await page.goto('/')
-  await page.locator('header').getByRole('button', { name: 'Entrar' }).click()
-  const dialog = page.getByRole('dialog')
-  await dialog.getByPlaceholder('contato@email.com').fill(email)
-  await dialog.getByPlaceholder('Senha', { exact: true }).fill('demo1234')
-  await dialog.locator('button[type=submit]').click()
-  await expect(dialog).not.toBeVisible()
-}
+import { login, logoutFromAccountSidebar } from './helpers'
 
 test.describe('Perfil do colecionador — edição, senha, avatar e acesso restrito', () => {
   test('acesso sem login redireciona ao início e abre o modal de entrar', async ({ page }) => {
@@ -59,13 +50,8 @@ test.describe('Perfil do colecionador — edição, senha, avatar e acesso restr
     await page.getByRole('button', { name: 'Salvar' }).click()
     await expect(page.getByText('Perfil atualizado.')).toBeVisible()
 
-    await page.locator('header').getByRole('button', { name: 'Sair' }).click()
-    await page.locator('header').getByRole('button', { name: 'Entrar' }).click()
-    const dialog = page.getByRole('dialog')
-    await dialog.getByPlaceholder('contato@email.com').fill('ana@example.com')
-    await dialog.getByPlaceholder('Senha', { exact: true }).fill('novaSenha123')
-    await dialog.locator('button[type=submit]').click()
-    await expect(dialog).not.toBeVisible()
+    await logoutFromAccountSidebar(page)
+    await login(page, 'ana@example.com', 'novaSenha123')
 
     await page.goto('/profile')
     await expect(page.locator('input[name=name]')).toHaveValue('Ana Souza')

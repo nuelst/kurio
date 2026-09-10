@@ -1,5 +1,5 @@
 import { expect, test } from './fixtures'
-
+import { login } from './helpers'
 
 test.describe('Regressão visual', () => {
   test('grade do catálogo (Início)', async ({ page }) => {
@@ -14,14 +14,7 @@ test.describe('Regressão visual', () => {
   })
 
   test('carrinho vazio', async ({ page }) => {
-    await page.goto('/')
-    await page.locator('header').getByRole('button', { name: 'Entrar' }).click()
-    const dialog = page.getByRole('dialog')
-    await dialog.getByPlaceholder('contato@email.com').fill('ana@example.com')
-    await dialog.getByPlaceholder('Senha', { exact: true }).fill('demo1234')
-    await dialog.locator('button[type=submit]').click()
-    await expect(dialog).not.toBeVisible()
-
+    await login(page)
     await page.goto('/cart')
     await expect(page.getByText('Seu carrinho está vazio')).toBeVisible()
 

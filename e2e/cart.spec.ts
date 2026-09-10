@@ -1,4 +1,5 @@
 import { expect, test } from './fixtures'
+import { login } from './helpers'
 
 test.describe('Carrinho — itens, cupom, persistência e tempo real', () => {
   test('carrinho vazio mostra estado vazio com saída para o catálogo', async ({ page }) => {
@@ -78,14 +79,9 @@ test.describe('Carrinho — itens, cupom, persistência e tempo real', () => {
     await page.reload()
     await expect(page.getByTestId('cart-line')).toHaveCount(1)
 
-    await page.locator('header').getByRole('button', { name: 'Entrar' }).click()
-    const dialog = page.getByRole('dialog')
-    await dialog.getByPlaceholder('contato@email.com').fill('bruno@example.com')
-    await dialog.getByPlaceholder('Senha', { exact: true }).fill('demo1234')
-    await dialog.locator('button[type=submit]').click()
-    await expect(dialog).not.toBeVisible()
+    await login(page, 'bruno@example.com')
 
-    await page.reload()
+    await page.goto('/cart')
     await expect(page.getByTestId('cart-line')).toHaveCount(1)
   })
 

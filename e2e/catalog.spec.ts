@@ -1,5 +1,14 @@
 import { expect, test } from './fixtures'
 
+// abaixo do breakpoint sm, os filtros de coleção vivem num drawer fechado por padrão (ver
+// CatalogFilterDrawer) — precisa abrir antes de conseguir clicar num botão de categoria.
+async function openFilterDrawerIfMobile(page: import('@playwright/test').Page) {
+  const width = page.viewportSize()?.width ?? 1440
+  if (width < 640) {
+    await page.getByRole('button', { name: 'Filtros' }).click()
+  }
+}
+
 test.describe('Catálogo — busca, filtros, ordenação, paginação e histórico', () => {
   test('combina filtros na URL e sobrevive a refresh e navegação pelo histórico', async ({
     page,
@@ -18,6 +27,7 @@ test.describe('Catálogo — busca, filtros, ordenação, paginação e históri
     await page.getByLabel('Buscar NFTs').fill('')
     await expect(page).not.toHaveURL(/q=/)
 
+    await openFilterDrawerIfMobile(page)
     await page.getByRole('button', { name: /^Arte digital/ }).click()
     await expect(page).toHaveURL(/category=art/)
 
@@ -30,6 +40,7 @@ test.describe('Catálogo — busca, filtros, ordenação, paginação e históri
     const parsedArtPrices = artPrices.map((text) => Number.parseFloat(text))
     expect(parsedArtPrices).toEqual([...parsedArtPrices].sort((a, b) => a - b))
 
+    await openFilterDrawerIfMobile(page)
     await page.getByRole('button', { name: 'Todas as coleções' }).click()
     await expect(page).not.toHaveURL(/category=/)
     await expect(page.getByLabel('Página 1')).toHaveAttribute('aria-current', 'page')

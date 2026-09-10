@@ -1,4 +1,5 @@
 import { expect, test } from './fixtures'
+import { login } from './helpers'
 
 test.describe('Detalhe do NFT — acesso direto, estoque e favoritos', () => {
   test('acesso direto carrega o NFT correto', async ({ page }) => {
@@ -55,14 +56,10 @@ test.describe('Detalhe do NFT — acesso direto, estoque e favoritos', () => {
 
     await expect(favoriteButton).toBeVisible()
 
-    await page.locator('header').getByRole('button', { name: 'Entrar' }).click()
-    const dialog = page.getByRole('dialog')
-    await dialog.getByPlaceholder('contato@email.com').fill('ana@example.com')
-    await dialog.getByPlaceholder('Senha', { exact: true }).fill('demo1234')
-    await dialog.locator('button[type=submit]').click()
-    await expect(dialog).not.toBeVisible()
+    await login(page)
+    await page.goto('/nfts/nft-3')
 
-    await favoriteButton.click()
+    await page.getByRole('button', { name: 'Favoritar', exact: true }).click()
     await expect(page.getByRole('button', { name: 'Favoritado', exact: true })).toBeVisible()
 
     await page.reload()
@@ -70,14 +67,7 @@ test.describe('Detalhe do NFT — acesso direto, estoque e favoritos', () => {
   })
 
   test('falha ao favoritar reverte o estado otimista e avisa por toast', async ({ page }) => {
-    await page.goto('/')
-    await page.locator('header').getByRole('button', { name: 'Entrar' }).click()
-    const dialog = page.getByRole('dialog')
-    await dialog.getByPlaceholder('contato@email.com').fill('ana@example.com')
-    await dialog.getByPlaceholder('Senha', { exact: true }).fill('demo1234')
-    await dialog.locator('button[type=submit]').click()
-    await expect(dialog).not.toBeVisible()
-
+    await login(page)
     await page.goto('/nfts/nft-3')
     await page.evaluate(() => localStorage.setItem('nft-marketplace.scenario', 'forbidden'))
 

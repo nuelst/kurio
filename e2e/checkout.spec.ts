@@ -1,14 +1,5 @@
 import { expect, test } from './fixtures'
-
-async function login(page: import('@playwright/test').Page, email = 'ana@example.com') {
-  await page.goto('/')
-  await page.locator('header').getByRole('button', { name: 'Entrar' }).click()
-  const dialog = page.getByRole('dialog')
-  await dialog.getByPlaceholder('contato@email.com').fill(email)
-  await dialog.getByPlaceholder('Senha', { exact: true }).fill('demo1234')
-  await dialog.locator('button[type=submit]').click()
-  await expect(dialog).not.toBeVisible()
-}
+import { login } from './helpers'
 
 async function addToCartAndGoToCheckout(page: import('@playwright/test').Page) {
   await page.goto('/nfts/nft-3')
@@ -91,8 +82,7 @@ test.describe('Pagamento e confirmação de pedido', () => {
   test('sem carteira cadastrada bloqueia a compra com um convite para cadastrar', async ({
     page,
   }) => {
-    await page.goto('/')
-    await page.locator('header').getByRole('button', { name: 'Entrar' }).click()
+    await page.goto('/checkout')
     const dialog = page.getByRole('dialog')
     await dialog.getByRole('button', { name: 'Criar conta' }).click()
     await dialog.getByPlaceholder('Nome de usuário').fill('Visitante Teste')

@@ -1,14 +1,5 @@
 import { expect, test } from './fixtures'
-
-async function login(page: import('@playwright/test').Page) {
-  await page.goto('/')
-  await page.locator('header').getByRole('button', { name: 'Entrar' }).click()
-  const dialog = page.getByRole('dialog')
-  await dialog.getByPlaceholder('contato@email.com').fill('ana@example.com')
-  await dialog.getByPlaceholder('Senha', { exact: true }).fill('demo1234')
-  await dialog.locator('button[type=submit]').click()
-  await expect(dialog).not.toBeVisible()
-}
+import { login } from './helpers'
 
 test.describe('Carteiras — principal e secundária', () => {
   test('acesso sem login redireciona ao início e abre o modal de entrar', async ({ page }) => {
