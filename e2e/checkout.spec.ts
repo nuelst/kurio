@@ -13,6 +13,7 @@ async function login(page: import('@playwright/test').Page, email = 'ana@example
 async function addToCartAndGoToCheckout(page: import('@playwright/test').Page) {
   await page.goto('/nfts/nft-3')
   await page.getByRole('button', { name: 'Comprar', exact: true }).click()
+  await expect(page.getByText('adicionado ao carrinho')).toBeVisible()
   await page.goto('/checkout')
   await expect(page.getByText('Perfil do colecionador')).toBeVisible()
 }
@@ -110,6 +111,7 @@ test.describe('Pagamento e confirmação de pedido', () => {
     await login(page)
     await page.goto('/nfts/nft-3')
     await page.getByRole('button', { name: 'Comprar', exact: true }).click()
+    await expect(page.getByText('adicionado ao carrinho')).toBeVisible()
 
     const result = await page.evaluate(async () => {
       const token = JSON.parse(localStorage.getItem('nft-marketplace.session') ?? '{}')?.state
@@ -140,6 +142,7 @@ test.describe('Pagamento e confirmação de pedido', () => {
     await login(page)
     await page.goto('/nfts/nft-3')
     await page.getByRole('button', { name: 'Comprar', exact: true }).click()
+    await expect(page.getByText('adicionado ao carrinho')).toBeVisible()
 
     const result = await page.evaluate(async () => {
       const token = JSON.parse(localStorage.getItem('nft-marketplace.session') ?? '{}')?.state
@@ -180,6 +183,7 @@ test.describe('Pagamento e confirmação de pedido', () => {
     await login(page)
     await page.goto('/nfts/nft-3')
     await page.getByRole('button', { name: 'Comprar', exact: true }).click()
+    await expect(page.getByText('adicionado ao carrinho')).toBeVisible()
 
     const result = await page.evaluate(async () => {
       const token = JSON.parse(localStorage.getItem('nft-marketplace.session') ?? '{}')?.state
@@ -223,5 +227,46 @@ test.describe('Pagamento e confirmação de pedido', () => {
     expect(result.firstId).toBeTruthy()
     expect(result.secondStatus).toBe(409)
     expect(result.secondBody.message).toContain('dados diferentes')
+  })
+
+  test('timeout na criação do pedido recupera pelo mesmo pedido no reenvio, sem comprar em duplicidade', async ({
+    page,
+  }) => {
+    await login(page)
+    await addToCartAndGoToCheckout(page)
+
+    const availableBefore = await page.evaluate(() =>
+      fetch('/api/nfts/nft-3')
+        .then((res) => res.json())
+        .then((nft) => nft.edition.available),
+    )
+
+    await page.evaluate(() => localStorage.setItem('nft-marketplace.scenario', 'timeout'))
+    await page.getByRole('radio').first().check()
+    await expect(page.getByRole('button', { name: 'Desconectar' })).toBeVisible({
+      timeout: 3000,
+    })
+    await page.getByRole('button', { name: 'Confirmar compra' }).click()
+
+    // the client-side timeout (2.5s) fires before the mock ever responds
+    await expect(page.getByText('Não foi possível confirmar se o pedido foi recebido')).toBeVisible(
+      { timeout: 5000 },
+    )
+
+    // the connection recovers; the user retries with the same idempotency key
+    await page.evaluate(() => localStorage.removeItem('nft-marketplace.scenario'))
+    await page.getByRole('button', { name: 'Confirmar compra' }).click()
+    await expect(page).toHaveURL(/\/orders\//, { timeout: 5000 })
+    await expect(page.getByText('Seus NFTs agora estão na sua carteira')).toBeVisible({
+      timeout: 5000,
+    })
+
+    const availableAfter = await page.evaluate(() =>
+      fetch('/api/nfts/nft-3')
+        .then((res) => res.json())
+        .then((nft) => nft.edition.available),
+    )
+    // exactly one unit was purchased — the hung first attempt never bought a second one
+    expect(availableBefore - availableAfter).toBe(1)
   })
 })
