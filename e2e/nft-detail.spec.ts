@@ -68,4 +68,29 @@ test.describe('Detalhe do NFT — acesso direto, estoque e favoritos', () => {
     await page.reload()
     await expect(page.getByRole('button', { name: 'Favoritado', exact: true })).toBeVisible()
   })
+
+  test('falha ao favoritar reverte o estado otimista e avisa por toast', async ({ page }) => {
+    await page.goto('/')
+    await page.locator('header').getByRole('button', { name: 'Entrar' }).click()
+    const dialog = page.getByRole('dialog')
+    await dialog.getByPlaceholder('contato@email.com').fill('ana@example.com')
+    await dialog.getByPlaceholder('Senha', { exact: true }).fill('demo1234')
+    await dialog.locator('button[type=submit]').click()
+    await expect(dialog).not.toBeVisible()
+
+    await page.goto('/nfts/nft-3')
+    await page.evaluate(() => localStorage.setItem('nft-marketplace.scenario', 'forbidden'))
+
+    const favoriteButton = page.getByRole('button', { name: 'Favoritar', exact: true })
+    await favoriteButton.click()
+
+    await expect(page.getByText('Não foi possível favoritar')).toBeVisible()
+    await expect(page.getByText('permissão')).toBeVisible()
+    // reverteu para o estado anterior (não "favoritado") em vez de ficar preso no otimista
+    await expect(favoriteButton).toBeVisible()
+
+    await page.evaluate(() => localStorage.removeItem('nft-marketplace.scenario'))
+    await favoriteButton.click()
+    await expect(page.getByRole('button', { name: 'Favoritado', exact: true })).toBeVisible()
+  })
 })

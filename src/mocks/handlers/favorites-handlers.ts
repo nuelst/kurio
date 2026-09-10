@@ -2,9 +2,17 @@ import { HttpResponse, http } from 'msw'
 
 import { getUserIdFromRequest } from '@/mocks/auth'
 import { db, persistDb } from '@/mocks/db'
+import { getScenario } from '@/mocks/scenarios'
 
 function unauthorized() {
   return HttpResponse.json({ message: 'Sessão inválida ou expirada' }, { status: 401 })
+}
+
+function forbidden() {
+  return HttpResponse.json(
+    { message: 'Sua conta não tem permissão para favoritar no momento.' },
+    { status: 403 },
+  )
 }
 
 export const favoritesHandlers = [
@@ -19,6 +27,7 @@ export const favoritesHandlers = [
   http.post('/api/favorites', async ({ request }) => {
     const userId = getUserIdFromRequest(request)
     if (!userId) return unauthorized()
+    if (getScenario() === 'forbidden') return forbidden()
 
     const body = (await request.json()) as { nftId: string }
     const existing = db.favorite.findFirst({

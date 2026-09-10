@@ -1,4 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
+
 import type { CatalogPage } from '@/features/catalog/model/nft'
 import { addFavorite, removeFavorite } from '@/features/favorites/api/favorites-api'
 import type { NftDetail } from '@/features/nft-detail/model/nft-detail'
@@ -39,13 +41,14 @@ export function useToggleFavorite() {
 
       return { previousQueries, previousDetail, nftId }
     },
-    onError: (_error, _input, context) => {
+    onError: (error, _input, context) => {
       context?.previousQueries.forEach(([queryKey, data]) => {
         queryClient.setQueryData(queryKey, data)
       })
       if (context) {
         queryClient.setQueryData(['nft-detail', context.nftId], context.previousDetail)
       }
+      toast('Não foi possível favoritar', { description: error.message })
     },
     onSettled: (_data, _error, { nftId }) => {
       queryClient.invalidateQueries({ queryKey: ['catalog'] })
