@@ -1,5 +1,6 @@
 import axios, { type AxiosError } from 'axios'
 
+import { getGuestId } from '@/shared/lib/guest-id'
 import { sessionStore } from '@/shared/stores/session-store'
 
 export type ApiErrorKind =
@@ -75,6 +76,7 @@ http.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
+  config.headers['X-Guest-Id'] = getGuestId()
   return config
 })
 

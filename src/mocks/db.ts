@@ -43,6 +43,10 @@ export const db = factory({
     discountPercent: Number,
     expiresAt: String,
   },
+  cartCoupon: {
+    id: primaryKey(String),
+    code: String,
+  },
   order: {
     id: primaryKey(String),
     userId: String,
@@ -71,6 +75,7 @@ function dump() {
     favorite: db.favorite.getAll(),
     cartItem: db.cartItem.getAll(),
     coupon: db.coupon.getAll(),
+    cartCoupon: db.cartCoupon.getAll(),
     order: db.order.getAll(),
     wallet: db.wallet.getAll(),
   }
@@ -103,6 +108,9 @@ export function restoreDb(): boolean {
   snapshot.coupon.forEach((entity) => {
     db.coupon.create(entity)
   })
+  snapshot.cartCoupon.forEach((entity) => {
+    db.cartCoupon.create(entity)
+  })
   snapshot.order.forEach((entity) => {
     db.order.create(entity)
   })
@@ -131,6 +139,9 @@ export function clearDb() {
   })
   snapshot.coupon.forEach((entity) => {
     db.coupon.delete({ where: { id: { equals: entity.id } } })
+  })
+  snapshot.cartCoupon.forEach((entity) => {
+    db.cartCoupon.delete({ where: { id: { equals: entity.id } } })
   })
   snapshot.order.forEach((entity) => {
     db.order.delete({ where: { id: { equals: entity.id } } })

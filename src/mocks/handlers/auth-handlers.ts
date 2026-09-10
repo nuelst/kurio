@@ -4,6 +4,7 @@ import type { AuthResponse } from '@/features/auth/model/auth'
 import { getUserIdFromRequest, hashPassword, issueToken, verifyPassword } from '@/mocks/auth'
 import { db, persistDb } from '@/mocks/db'
 import { placeholderImage } from '@/mocks/fixtures/placeholder-image'
+import { mergeGuestCart } from '@/mocks/handlers/cart-handlers'
 
 function toAuthUser(user: { id: string; name: string; email: string; avatarUrl: string }) {
   return { id: user.id, name: user.name, email: user.email, avatarUrl: user.avatarUrl }
@@ -56,6 +57,7 @@ export const authHandlers = [
       avatarUrl: placeholderImage(id),
     })
     persistDb()
+    mergeGuestCart(request.headers.get('x-guest-id'), id)
 
     const response: AuthResponse = { user: toAuthUser(user), accessToken: issueToken(id) }
     return HttpResponse.json(response, { status: 201 })
@@ -76,6 +78,8 @@ export const authHandlers = [
 
     const passwordMatches = await verifyPassword(password, user.password)
     if (!passwordMatches) return invalidCredentials()
+
+    mergeGuestCart(request.headers.get('x-guest-id'), user.id)
 
     const response: AuthResponse = { user: toAuthUser(user), accessToken: issueToken(user.id) }
     return HttpResponse.json(response)

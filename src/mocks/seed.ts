@@ -111,10 +111,23 @@ async function seedFixtures() {
   db.favorite.create({ id: 'favorite-1', userId: 'user-ana', nftId: 'nft-2' })
   db.favorite.create({ id: 'favorite-2', userId: 'user-ana', nftId: 'nft-5' })
 
+  db.coupon.create({
+    id: 'coupon-launch10',
+    code: 'LAUNCH10',
+    discountPercent: 10,
+    expiresAt: new Date(Date.now() + 365 * 24 * 3_600_000).toISOString(),
+  })
+  db.coupon.create({
+    id: 'coupon-expired5',
+    code: 'EXPIRED5',
+    discountPercent: 5,
+    expiresAt: new Date(Date.now() - 24 * 3_600_000).toISOString(),
+  })
+
   persistDb()
 }
 
-const SEED_VERSION = '2'
+const SEED_VERSION = '3'
 const SEED_VERSION_KEY = 'nft-marketplace.seed-version'
 
 export async function seedDb(): Promise<void> {
