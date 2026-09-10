@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { type FormEvent, useEffect, useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
+import { type FormEvent, useState } from 'react'
 import { toast } from 'sonner'
 import {
   applyCoupon as applyCouponRequest,
@@ -8,23 +9,23 @@ import {
   updateCartItemQuantity,
 } from '@/features/cart/api/cart-api'
 import { cartQueries } from '@/features/cart/api/cart-queries'
-import { applyNftUpdateToLine, recomputeQuote } from '@/features/cart/lib/cart-quote'
+import { recomputeQuote } from '@/features/cart/lib/cart-quote'
 import type { CartLine, CartQuote } from '@/features/cart/model/cart'
+import { useCartRealtimeSync } from '@/features/cart/viewmodel/use-cart-realtime-sync'
 import { catalogQueries } from '@/features/catalog/api/catalog-queries'
-import type { NftSummary, NftUpdatedEvent } from '@/features/catalog/model/nft'
+import type { NftSummary } from '@/features/catalog/model/nft'
 import { useToggleFavorite } from '@/features/favorites/viewmodel/use-toggle-favorite'
 import type { ApiError } from '@/shared/lib/http'
 import { multiply } from '@/shared/lib/money'
-import { notImplementedToast } from '@/shared/lib/not-implemented'
-import { createEventVersionTracker } from '@/shared/lib/realtime-event'
-import { getSocket } from '@/shared/lib/socket'
 
 const RELATED_LIMIT = 10
 
 export function useCartViewModel() {
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
   const query = useQuery(cartQueries.get())
   const quote = query.data
+  useCartRealtimeSync()
 
   const [couponCode, setCouponCode] = useState('')
   const [couponError, setCouponError] = useState<string | null>(null)
@@ -116,50 +117,6 @@ export function useCartViewModel() {
     },
   })
 
-  useEffect(() => {
-    const socket = getSocket()
-    const tracker = createEventVersionTracker()
-
-    function handleNftUpdated(event: NftUpdatedEvent) {
-      if (!tracker.accept(event)) return
-
-      const current = queryClient.getQueryData<CartQuote>(['cart'])
-      const affected = current?.items.find((item) => item.nftId === event.data.nftId)
-      if (!affected) return
-
-      const wasAvailable = !affected.isSoldOut
-      const priceChanged = affected.priceEth !== event.data.priceEth
-      const becameSoldOut = wasAvailable && event.data.available <= 0
-
-      queryClient.setQueryData<CartQuote>(['cart'], (quote) => {
-        if (!quote) return quote
-        return recomputeQuote(
-          quote.items.map((item) =>
-            item.nftId === event.data.nftId
-              ? applyNftUpdateToLine(item, event.data.priceEth, event.data.available)
-              : item,
-          ),
-          quote.coupon,
-        )
-      })
-
-      if (becameSoldOut) {
-        toast(`${affected.title} ficou indisponível`, {
-          description: 'Removemos o valor do total — remova o item ou aguarde reposição.',
-        })
-      } else if (priceChanged) {
-        toast(`Preço de ${affected.title} foi atualizado`, {
-          description: 'O resumo do carrinho foi recalculado.',
-        })
-      }
-    }
-
-    socket.on('nft.updated', handleNftUpdated)
-    return () => {
-      socket.off('nft.updated', handleNftUpdated)
-    }
-  }, [queryClient])
-
   function incrementQuantity(line: CartLine) {
     if (line.isSoldOut) return
     const next = Math.min(line.quantity + 1, line.available)
@@ -190,7 +147,7 @@ export function useCartViewModel() {
   }
 
   function checkout() {
-    notImplementedToast('Pagamento')
+    navigate({ to: '/checkout' })
   }
 
   return {
