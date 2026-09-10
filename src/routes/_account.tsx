@@ -1,16 +1,10 @@
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 import { AccountSidebar } from '@/app/layout/account-sidebar'
-import { authModalStore } from '@/features/auth'
-import { sessionStore } from '@/shared/stores/session-store'
+import { requireAuth } from '@/shared/lib/require-auth'
 
 export const Route = createFileRoute('/_account')({
-  beforeLoad: () => {
-    if (!sessionStore.getState().user) {
-      authModalStore.getState().open('login')
-      throw redirect({ to: '/' })
-    }
-  },
+  beforeLoad: requireAuth,
   component: AccountLayout,
 })
 

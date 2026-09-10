@@ -1,4 +1,4 @@
-export type ScenarioId = 'default' | 'empty' | 'latency' | 'error'
+export type ScenarioId = 'default' | 'empty' | 'latency' | 'error' | 'declined'
 
 const STORAGE_KEY = 'nft-marketplace.scenario'
 
