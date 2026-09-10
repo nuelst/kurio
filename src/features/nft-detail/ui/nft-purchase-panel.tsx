@@ -18,6 +18,7 @@ interface NftPurchasePanelProps {
   quantity: number
   available: number
   isFavorite: boolean
+  isBuying: boolean
   tokenNumber: string
   collectionName: string
   attributes: string[]
@@ -38,6 +39,7 @@ export function NftPurchasePanel({
   quantity,
   available,
   isFavorite,
+  isBuying,
   tokenNumber,
   collectionName,
   attributes,
@@ -48,6 +50,9 @@ export function NftPurchasePanel({
   onShare,
 }: NftPurchasePanelProps) {
   const isSoldOut = available <= 0
+  let buyLabel = 'Comprar'
+  if (isSoldOut) buyLabel = 'Esgotado'
+  else if (isBuying) buyLabel = 'Adicionando...'
 
   return (
     <div className="flex flex-1 flex-col justify-between gap-6 lg:h-[444px]">
@@ -132,11 +137,11 @@ export function NftPurchasePanel({
 
         <Button
           type="button"
-          disabled={isSoldOut}
+          disabled={isSoldOut || isBuying}
           onClick={onBuy}
           className="px-8 font-bold uppercase"
         >
-          {isSoldOut ? 'Esgotado' : 'Comprar'}
+          {buyLabel}
         </Button>
 
         <Button type="button" variant="outline" onClick={onToggleFavorite}>

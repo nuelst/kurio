@@ -5,9 +5,9 @@ import { NftDetailTabs } from '@/features/nft-detail/ui/nft-detail-tabs'
 import { NftGallery } from '@/features/nft-detail/ui/nft-gallery'
 import { NftNotFound } from '@/features/nft-detail/ui/nft-not-found'
 import { NftPurchasePanel } from '@/features/nft-detail/ui/nft-purchase-panel'
-import { RelatedNfts } from '@/features/nft-detail/ui/related-nfts'
 import type { useNftDetailViewModel } from '@/features/nft-detail/viewmodel/use-nft-detail-view-model'
 import { ErrorState } from '@/shared/ui/error-state'
+import { RelatedNfts } from '@/shared/ui/related-nfts'
 
 type NftDetailViewModel = ReturnType<typeof useNftDetailViewModel>
 
@@ -27,6 +27,7 @@ export function NftDetailView(viewModel: NftDetailViewModel) {
     setActiveTab,
     toggleFavoriteFor,
     buy,
+    isBuying,
     shareOn,
     relatedItems,
     isRelatedLoading,
@@ -73,6 +74,7 @@ export function NftDetailView(viewModel: NftDetailViewModel) {
               quantity={quantity}
               available={nft.edition.available}
               isFavorite={nft.isFavorite}
+              isBuying={isBuying}
               tokenNumber={nft.tokenNumber}
               collectionName={nft.collectionName}
               attributes={nft.attributes}
@@ -96,6 +98,7 @@ export function NftDetailView(viewModel: NftDetailViewModel) {
           />
 
           <RelatedNfts
+            title="Mais desta coleção"
             items={relatedItems}
             isLoading={isRelatedLoading}
             onToggleFavorite={toggleFavoriteFor}

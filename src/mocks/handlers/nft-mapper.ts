@@ -16,6 +16,11 @@ interface EditionRecord {
   updatedVersion: number
 }
 
+export function tokenNumberFor(nftId: string): string {
+  const seq = Number(nftId.slice(4))
+  return String((seq * 71 + 13) % 9999).padStart(4, '0')
+}
+
 export function toNftSummary(
   nft: NftRecord,
   edition: EditionRecord,

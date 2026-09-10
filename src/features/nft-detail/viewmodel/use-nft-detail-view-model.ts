@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
+import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-
+import { toast } from 'sonner'
+import { useAddToCart } from '@/features/cart/viewmodel/use-add-to-cart'
 import { catalogQueries } from '@/features/catalog/api/catalog-queries'
 import type { NftSummary } from '@/features/catalog/model/nft'
 import { useToggleFavorite } from '@/features/favorites/viewmodel/use-toggle-favorite'
 import { nftDetailQueries } from '@/features/nft-detail/api/nft-detail-queries'
-import { notImplementedToast } from '@/shared/lib/not-implemented'
 
 export type NftDetailTab = 'details' | 'reviews'
 
@@ -14,6 +15,8 @@ const RELATED_LIMIT = 10
 export function useNftDetailViewModel(nftId: string) {
   const query = useQuery(nftDetailQueries.detail(nftId))
   const toggleFavorite = useToggleFavorite()
+  const addToCart = useAddToCart()
+  const navigate = useNavigate()
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [quantity, setQuantity] = useState(1)
@@ -47,7 +50,22 @@ export function useNftDetailViewModel(nftId: string) {
   }
 
   function buy() {
-    notImplementedToast('Compra')
+    if (!nft) return
+    addToCart.mutate(
+      { nftId: nft.id, quantity },
+      {
+        onSuccess: () => {
+          toast(`${nft.title} adicionado ao carrinho`, {
+            action: { label: 'Ver carrinho', onClick: () => navigate({ to: '/cart' }) },
+          })
+        },
+        onError: (error) => {
+          toast(`Não foi possível adicionar ${nft.title} ao carrinho`, {
+            description: error.message,
+          })
+        },
+      },
+    )
   }
 
   function shareOn(channel: 'twitter' | 'linkedin' | 'email') {
@@ -80,6 +98,7 @@ export function useNftDetailViewModel(nftId: string) {
     setActiveTab,
     toggleFavoriteFor,
     buy,
+    isBuying: addToCart.isPending,
     shareOn,
     relatedItems,
     isRelatedLoading: relatedQuery.isLoading,
