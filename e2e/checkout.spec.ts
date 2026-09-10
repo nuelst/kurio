@@ -314,4 +314,26 @@ test.describe('Pagamento e confirmação de pedido', () => {
       timeout: 5000,
     })
   })
+
+  test('preço muda ao vivo enquanto o checkout está aberto, pela mesma via de um push real do servidor', async ({
+    page,
+  }) => {
+    await login(page)
+    await addToCartAndGoToCheckout(page)
+
+    const totalBefore = await page.getByTestId('checkout-total').textContent()
+
+    // simulateNftUpdate passa pelo mesmo caminho de um push do servidor de verdade: grava no
+    // "banco" mockado e emite nft.updated via socket — não é um fetch cru reescrevendo o cache
+    // do client por fora, é o mesmo evento que useCartRealtimeSync (reaproveitada no checkout)
+    // já escuta.
+    await expect(async () => {
+      await page.evaluate(() => window.__mocks__?.simulateNftUpdate('nft-3', { priceEth: '9.99' }))
+      await expect(page.getByText('Preço de Cosmic Signal #166 foi atualizado')).toBeVisible({
+        timeout: 1000,
+      })
+    }).toPass({ timeout: 10_000 })
+
+    await expect(page.getByTestId('checkout-total')).not.toHaveText(totalBefore ?? '')
+  })
 })
