@@ -26,6 +26,10 @@ export function AuthModal() {
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
       <DialogContent
         showCloseButton={false}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault()
+          authModalStore.getState().triggerElement?.focus()
+        }}
         className={cn(
           'flex w-[calc(100%-2rem)] max-w-[500px] text-[13px] flex-col gap-0 overflow-hidden rounded-lg bg-sidebar p-0 sm:max-w-[500px]',
           modalMinHeight[mode],
