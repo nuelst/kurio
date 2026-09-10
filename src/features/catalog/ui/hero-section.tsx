@@ -35,6 +35,7 @@ export function HeroSection() {
               className="size-full object-cover"
               width={450}
               height={450}
+              fetchPriority="high"
             />
           </div>
           <div className="absolute bottom-[11.11%] left-[8.89%] size-[26.67%] overflow-hidden rounded-lg">

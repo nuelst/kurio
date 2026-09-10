@@ -67,6 +67,7 @@ export function CatalogView(viewModel: CatalogViewModel) {
           ) : null}
 
           <div className="flex flex-col gap-6">
+            <h2 className="sr-only">Catálogo de NFTs</h2>
             <CatalogToolbar sort={search.sort} onSortChange={setSort} />
 
             {isLoading ? <CatalogSkeleton /> : null}

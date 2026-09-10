@@ -1,6 +1,6 @@
 {
   "environment": {
-    "date": "2026-09-10T21:47:00.257Z",
+    "date": "2026-09-10T23:07:21.970Z",
     "lighthouseVersion": "13.4.1",
     "chromeVersion": "Google Chrome 152.0.7977.82",
     "nodeVersion": "v24.13.1",
@@ -8,7 +8,7 @@
     "cpu": "11th Gen Intel(R) Core(TM) i5-1155G7 @ 2.50GHz",
     "cpuCount": 8,
     "ramGb": 15,
-    "loadAvg": "4.31, 6.42, 9.27"
+    "loadAvg": "2.47, 2.55, 3.65"
   },
   "results": [
     {
@@ -25,59 +25,59 @@
         {
           "run": 1,
           "scores": {
-            "performance": 68,
-            "accessibility": 94,
+            "performance": 67,
+            "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 4706.6564,
+            "lcp": 4793.407999999999,
             "cls": 0,
-            "tbt": 391.5
+            "tbt": 413.00000000000045
           },
           "clsCause": null
         },
         {
           "run": 2,
           "scores": {
-            "performance": 62,
-            "accessibility": 94,
+            "performance": 54,
+            "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 4778.346799999999,
+            "lcp": 4858.6626,
             "cls": 0,
-            "tbt": 563
+            "tbt": 995.9999999999995
           },
           "clsCause": null
         },
         {
           "run": 3,
           "scores": {
-            "performance": 62,
-            "accessibility": 94,
+            "performance": 56,
+            "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 4968.24,
+            "lcp": 4843.904200000002,
             "cls": 0,
-            "tbt": 497
+            "tbt": 840.9999999999995
           },
           "clsCause": null
         }
       ],
       "medianScores": {
-        "performance": 62,
-        "accessibility": 94,
+        "performance": 56,
+        "accessibility": 100,
         "best-practices": 100,
         "seo": 100
       },
       "medianMetrics": {
-        "lcp": 4778.346799999999,
+        "lcp": 4843.904200000002,
         "cls": 0,
-        "tbt": 497
+        "tbt": 840.9999999999995
       }
     },
     {
@@ -116,59 +116,59 @@
         {
           "run": 1,
           "scores": {
-            "performance": 90,
-            "accessibility": 95,
+            "performance": 93,
+            "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 1783.1762,
-            "cls": 0.00018883758438456826,
-            "tbt": 86
+            "lcp": 1579.982,
+            "cls": 0.00001868450953162479,
+            "tbt": 55.5
           },
           "clsCause": null
         },
         {
           "run": 2,
           "scores": {
-            "performance": 86,
-            "accessibility": 95,
+            "performance": 91,
+            "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 2126.0207499999997,
-            "cls": 0.00018883758438456826,
-            "tbt": 80.5
+            "lcp": 1652.83,
+            "cls": 0.00001868450953162479,
+            "tbt": 109.5
           },
-          "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
+          "clsCause": null
         },
         {
           "run": 3,
           "scores": {
-            "performance": 90,
-            "accessibility": 95,
+            "performance": 92,
+            "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 1795.3169749999997,
-            "cls": 0.00018883758438456826,
-            "tbt": 73
+            "lcp": 1610.7541000000003,
+            "cls": 0.00001868450953162479,
+            "tbt": 40
           },
-          "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
+          "clsCause": null
         }
       ],
       "medianScores": {
-        "performance": 90,
-        "accessibility": 95,
+        "performance": 92,
+        "accessibility": 100,
         "best-practices": 100,
         "seo": 100
       },
       "medianMetrics": {
-        "lcp": 1795.3169749999997,
-        "cls": 0.00018883758438456826,
-        "tbt": 80.5
+        "lcp": 1610.7541000000003,
+        "cls": 0.00001868450953162479,
+        "tbt": 55.5
       }
     },
     {
@@ -185,59 +185,59 @@
         {
           "run": 1,
           "scores": {
-            "performance": 62,
+            "performance": 59,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 5632.021,
+            "lcp": 5820.307299999998,
             "cls": 0,
-            "tbt": 455.5
+            "tbt": 524
           },
           "clsCause": null
         },
         {
           "run": 2,
           "scores": {
-            "performance": 70,
+            "performance": 58,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 5162.7315,
+            "lcp": 5943.683800000001,
             "cls": 0,
-            "tbt": 267.5
+            "tbt": 539.9473
           },
           "clsCause": null
         },
         {
           "run": 3,
           "scores": {
-            "performance": 64,
+            "performance": 59,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 5391.405999999999,
+            "lcp": 5630.243299999999,
             "cls": 0,
-            "tbt": 409.5000000000007
+            "tbt": 539.5405499999996
           },
           "clsCause": null
         }
       ],
       "medianScores": {
-        "performance": 64,
+        "performance": 59,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100
       },
       "medianMetrics": {
-        "lcp": 5391.405999999999,
+        "lcp": 5820.307299999998,
         "cls": 0,
-        "tbt": 409.5000000000007
+        "tbt": 539.5405499999996
       }
     },
     {
@@ -276,59 +276,59 @@
         {
           "run": 1,
           "scores": {
-            "performance": 78,
+            "performance": 92,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 1930.8779999999995,
-            "cls": 0.2241711367842551,
-            "tbt": 19
+            "lcp": 1717.4741000000006,
+            "cls": 0,
+            "tbt": 23
           },
           "clsCause": null
         },
         {
           "run": 2,
           "scores": {
-            "performance": 79,
+            "performance": 91,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 1859.6520000000003,
-            "cls": 0.2241711367842551,
-            "tbt": 34
+            "lcp": 1814.4471999999998,
+            "cls": 0,
+            "tbt": 24.5
           },
           "clsCause": null
         },
         {
           "run": 3,
           "scores": {
-            "performance": 80,
+            "performance": 92,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "lcp": 1761.3574999999998,
-            "cls": 0.2241711367842551,
-            "tbt": 16.5
+            "lcp": 1680.4155,
+            "cls": 0,
+            "tbt": 21.5
           },
-          "clsCause": "Web font loaded (http://localhost:4174/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2)"
+          "clsCause": null
         }
       ],
       "medianScores": {
-        "performance": 79,
+        "performance": 92,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100
       },
       "medianMetrics": {
-        "lcp": 1859.6520000000003,
-        "cls": 0.2241711367842551,
-        "tbt": 19
+        "lcp": 1717.4741000000006,
+        "cls": 0,
+        "tbt": 23
       }
     }
   ]

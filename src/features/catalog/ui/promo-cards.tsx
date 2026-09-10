@@ -36,6 +36,7 @@ export function PromoCards() {
                 className="size-full object-cover"
                 width={288}
                 height={250}
+                loading="lazy"
               />
             </div>
             <div className="flex flex-1 flex-col justify-center gap-2 p-4 sm:p-6">

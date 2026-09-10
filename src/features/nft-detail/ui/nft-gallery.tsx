@@ -30,7 +30,14 @@ export function NftGallery({ title, images, selectedIndex, onSelect }: NftGaller
               index === selectedIndex && 'ring-primary',
             )}
           >
-            <img src={image} alt="" width={100} height={100} className="size-full object-cover" />
+            <img
+              src={image}
+              alt=""
+              width={100}
+              height={100}
+              loading="lazy"
+              className="size-full object-cover"
+            />
           </button>
         ))}
       </div>
@@ -42,6 +49,7 @@ export function NftGallery({ title, images, selectedIndex, onSelect }: NftGaller
             alt={title}
             width={404}
             height={404}
+            fetchPriority="high"
             className="size-full object-cover"
           />
         </div>
@@ -58,7 +66,12 @@ export function NftGallery({ title, images, selectedIndex, onSelect }: NftGaller
       <Dialog open={isZoomed} onOpenChange={setIsZoomed}>
         <DialogContent className="max-w-[min(90vw,700px)] bg-sidebar p-2">
           <DialogTitle className="sr-only">{title} — imagem ampliada</DialogTitle>
-          <img src={activeImage} alt={title} className="w-full rounded-lg object-contain" />
+          <img
+            src={activeImage}
+            alt={title}
+            loading="lazy"
+            className="w-full rounded-lg object-contain"
+          />
         </DialogContent>
       </Dialog>
     </div>

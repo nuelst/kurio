@@ -46,6 +46,7 @@ export function MobileHeroCard() {
               className="size-full object-cover"
               width={112}
               height={112}
+              fetchPriority="high"
             />
           </div>
           <div className="absolute bottom-[-11%] left-[-18%] size-[45%] overflow-hidden rounded-lg border-2 border-background">

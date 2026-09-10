@@ -179,7 +179,7 @@ export function SiteFooter() {
                   aria-label={label}
                   className="flex size-8 items-center justify-center rounded-md border border-border text-xs text-muted-foreground transition-colors hover:text-primary"
                 >
-                  {abbreviation}
+                  <span aria-hidden="true">{abbreviation}</span>
                 </button>
               ))}
             </div>

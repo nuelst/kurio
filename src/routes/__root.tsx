@@ -1,12 +1,17 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
+import { lazy, Suspense, useEffect, useState } from 'react'
 
 import { MobileTabBar } from '@/app/layout/mobile-tab-bar'
 import { SiteFooter } from '@/app/layout/site-footer'
 import { SiteHeader } from '@/app/layout/site-header'
-import { AuthModal } from '@/features/auth'
+import { authModalStore } from '@/features/auth'
 import { useSessionExpiryModal } from '@/shared/hooks/use-session-expiry-modal'
 import { useSocketReconnectReconciliation } from '@/shared/hooks/use-socket-reconnect-reconciliation'
 import { NotFound } from '@/shared/ui/not-found'
+
+const AuthModal = lazy(() =>
+  import('@/features/auth/ui/auth-modal').then((module) => ({ default: module.AuthModal })),
+)
 
 export const Route = createRootRoute({
   component: RootLayout,
@@ -16,6 +21,12 @@ export const Route = createRootRoute({
 function RootLayout() {
   useSocketReconnectReconciliation()
   useSessionExpiryModal()
+
+  const isAuthModalOpen = authModalStore((state) => state.isOpen)
+  const [shouldRenderAuthModal, setShouldRenderAuthModal] = useState(false)
+  useEffect(() => {
+    if (isAuthModalOpen) setShouldRenderAuthModal(true)
+  }, [isAuthModalOpen])
 
   return (
     <div className="flex min-h-svh flex-col bg-background text-foreground">
@@ -31,7 +42,11 @@ function RootLayout() {
       </main>
       <SiteFooter />
       <div className="h-[95px] md:hidden" aria-hidden="true" />
-      <AuthModal />
+      {shouldRenderAuthModal ? (
+        <Suspense fallback={null}>
+          <AuthModal />
+        </Suspense>
+      ) : null}
       <MobileTabBar />
     </div>
   )

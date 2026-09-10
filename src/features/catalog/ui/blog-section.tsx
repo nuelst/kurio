@@ -58,6 +58,7 @@ export function BlogSection() {
                 className="size-full object-cover"
                 width={268}
                 height={195}
+                loading="lazy"
               />
             </div>
             <div className="flex flex-col gap-2 p-4">

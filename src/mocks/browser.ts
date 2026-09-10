@@ -39,7 +39,6 @@ export async function enableMocking(): Promise<void> {
     expireSession,
     broadcastRawNftUpdate,
   }
-  import('@/mocks/socket/socket-handlers').then(({ socketHandlers }) => {
-    worker.use(...socketHandlers)
-  })
+  const { socketHandlers } = await import('@/mocks/socket/socket-handlers')
+  worker.use(...socketHandlers)
 }

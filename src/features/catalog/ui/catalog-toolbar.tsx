@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { CatalogSort } from '@/features/catalog/model/nft'
 
 const tabs = [
@@ -49,6 +49,9 @@ export function CatalogToolbar({ sort, onSortChange }: CatalogToolbarProps) {
             </TabsTrigger>
           ))}
         </TabsList>
+        {tabs.map((tab) => (
+          <TabsContent key={tab.value} value={tab.value} forceMount className="hidden" />
+        ))}
       </Tabs>
 
       <div className="flex items-center gap-2 text-sm">
