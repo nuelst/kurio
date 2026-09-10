@@ -68,16 +68,18 @@ export function SiteHeader() {
 
           {user ? (
             <div className="flex items-center gap-2">
-              <img
-                src={user.avatarUrl}
-                alt=""
-                width={32}
-                height={32}
-                className="size-8 rounded-full object-cover"
-              />
-              <span className="hidden max-w-24 truncate text-sm text-foreground sm:inline">
-                {user.name}
-              </span>
+              <Link to="/profile" className="flex items-center gap-2">
+                <img
+                  src={user.avatarUrl}
+                  alt=""
+                  width={32}
+                  height={32}
+                  className="size-8 rounded-full object-cover"
+                />
+                <span className="hidden max-w-24 truncate text-sm text-foreground sm:inline">
+                  {user.name}
+                </span>
+              </Link>
               <Button
                 type="button"
                 variant="ghost"

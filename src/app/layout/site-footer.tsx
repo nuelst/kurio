@@ -55,12 +55,23 @@ const socialLinks = [
 ]
 const compatibleWallets = ['MetaMask', 'WalletConnect', 'Coinbase']
 
-function FooterLinkButton({ label }: { label: string }) {
+const footerLinkClassName =
+  'block text-left text-sm text-muted-foreground transition-colors hover:text-primary'
+
+function FooterLinkButton({ label, to }: { label: string; to?: '/profile' | '/wallets' }) {
+  if (to) {
+    return (
+      <Link to={to} className={footerLinkClassName}>
+        {label}
+      </Link>
+    )
+  }
+
   return (
     <button
       type="button"
       onClick={() => notImplementedToast(label)}
-      className="block text-left text-sm text-muted-foreground transition-colors hover:text-primary"
+      className={footerLinkClassName}
     >
       {label}
     </button>
@@ -130,7 +141,11 @@ export function SiteFooter() {
         <div className="space-y-3">
           <h3 className="text-sm font-semibold text-foreground">Meu perfil</h3>
           {profileLinks.map((label) => (
-            <FooterLinkButton key={label} label={label} />
+            <FooterLinkButton
+              key={label}
+              label={label}
+              to={label === 'Meu perfil' ? '/profile' : undefined}
+            />
           ))}
         </div>
         <div className="space-y-3">
