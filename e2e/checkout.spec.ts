@@ -173,4 +173,55 @@ test.describe('Pagamento e confirmação de pedido', () => {
 
     expect(result.firstId).toBe(result.secondId)
   })
+
+  test('reaproveitar a chave de idempotência com conteúdo diferente gera conflito (409)', async ({
+    page,
+  }) => {
+    await login(page)
+    await page.goto('/nfts/nft-3')
+    await page.getByRole('button', { name: 'Comprar', exact: true }).click()
+
+    const result = await page.evaluate(async () => {
+      const token = JSON.parse(localStorage.getItem('nft-marketplace.session') ?? '{}')?.state
+        ?.accessToken
+      const cartRes = await fetch('/api/cart', { headers: { Authorization: `Bearer ${token}` } })
+      const cart = await cartRes.json()
+      const idempotencyKey = crypto.randomUUID()
+      const totals = {
+        subtotalEth: cart.subtotalEth,
+        discountEth: cart.discountEth,
+        networkFeeEth: cart.networkFeeEth,
+        totalEth: cart.totalEth,
+      }
+
+      const first = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          idempotencyKey,
+          walletSlot: 'primary',
+          collector: { name: 'Ana', email: 'ana@example.com' },
+          expectedTotals: totals,
+        }),
+      }).then((res) => res.json())
+
+      // same key, different collector name — a genuinely different order attempt
+      const second = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          idempotencyKey,
+          walletSlot: 'primary',
+          collector: { name: 'Outra Pessoa', email: 'ana@example.com' },
+          expectedTotals: totals,
+        }),
+      })
+
+      return { firstId: first.id, secondStatus: second.status, secondBody: await second.json() }
+    })
+
+    expect(result.firstId).toBeTruthy()
+    expect(result.secondStatus).toBe(409)
+    expect(result.secondBody.message).toContain('dados diferentes')
+  })
 })
