@@ -32,6 +32,24 @@ function toOrder(record: { id: string; status: string; snapshot: string }): Orde
   }
 }
 
+function buildRequestFingerprint(body: CreateOrderInput): string {
+  return JSON.stringify({
+    walletSlot: body.walletSlot,
+    collector: {
+      name: body.collector?.name?.trim() ?? '',
+      email: body.collector?.email?.trim() ?? '',
+      ensName: body.collector?.ensName?.trim() ?? '',
+      note: body.collector?.note?.trim() ?? '',
+    },
+    expectedTotals: {
+      subtotalEth: body.expectedTotals?.subtotalEth ?? '',
+      discountEth: body.expectedTotals?.discountEth ?? '',
+      networkFeeEth: body.expectedTotals?.networkFeeEth ?? '',
+      totalEth: body.expectedTotals?.totalEth ?? '',
+    },
+  })
+}
+
 export const ordersHandlers = [
   http.post('/api/orders', async ({ request }) => {
     const userId = getUserIdFromRequest(request)
@@ -46,10 +64,19 @@ export const ordersHandlers = [
       return HttpResponse.json({ message: 'idempotencyKey é obrigatório.' }, { status: 422 })
     }
 
+    const fingerprint = buildRequestFingerprint(body)
     const existing = db.order.findFirst({
       where: { userId: { equals: userId }, idempotencyKey: { equals: body.idempotencyKey } },
     })
     if (existing) {
+      if (existing.requestFingerprint !== fingerprint) {
+        return HttpResponse.json(
+          {
+            message: 'Esta chave de idempotência já foi usada para um pedido com dados diferentes.',
+          },
+          { status: 409 },
+        )
+      }
       return HttpResponse.json(toOrder(existing))
     }
 
@@ -112,6 +139,7 @@ export const ordersHandlers = [
       id: orderId,
       userId,
       idempotencyKey: body.idempotencyKey,
+      requestFingerprint: fingerprint,
       status: isDeclined ? 'declined' : 'confirmed',
       snapshot: JSON.stringify(snapshot),
       createdAt: new Date().toISOString(),

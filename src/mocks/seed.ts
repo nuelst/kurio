@@ -142,7 +142,7 @@ async function seedFixtures() {
   persistDb()
 }
 
-const SEED_VERSION = '4'
+const SEED_VERSION = '5'
 const SEED_VERSION_KEY = 'nft-marketplace.seed-version'
 
 export async function seedDb(): Promise<void> {

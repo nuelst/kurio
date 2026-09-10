@@ -85,9 +85,7 @@ export function useCheckoutViewModel() {
       if (error.status === 409) {
         renewIdempotencyKey()
         queryClient.invalidateQueries({ queryKey: ['cart'] })
-        toast('Os valores do pedido mudaram', {
-          description: 'Revise o resumo atualizado e confirme novamente.',
-        })
+        toast('Não foi possível confirmar o pedido', { description: error.message })
         return
       }
       collectorForm.setError('root', { message: error.message })

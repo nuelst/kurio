@@ -53,6 +53,7 @@ export const db = factory({
     id: primaryKey(String),
     userId: String,
     idempotencyKey: String,
+    requestFingerprint: String,
     status: String,
     snapshot: String,
     createdAt: String,
