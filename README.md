@@ -2,6 +2,8 @@
 
 Solução em desenvolvimento para o [desafio frontend](CHALLENGE.md) de um marketplace de NFTs. O enunciado original do desafio foi preservado em [CHALLENGE.md](CHALLENGE.md).
 
+**Deploy:** https://kurio-gray.vercel.app/
+
 ## Status atual
 
 As **9 telas do enunciado estão implementadas** — Início/Catálogo, Detalhe do NFT, Carrinho, Login, Cadastro, Perfil, Carteiras, Pagamento e Confirmação de pedido — seguindo o padrão descrito em [ARCHITECTURE.md](ARCHITECTURE.md).
