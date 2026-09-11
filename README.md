@@ -110,3 +110,7 @@ bun run test:e2e
 Roda a suíte em `e2e/` contra o build de produção (`vite preview`), em Chromium desktop (1440×900), mobile (Pixel 7) e tablet (768×1024 — restrito a `e2e/responsive-tablet.spec.ts`, não duplica a suite inteira).
 
 Regressão visual (`e2e/visual.spec.ts`) usa baselines versionadas em `e2e/visual.spec.ts-snapshots/`; para atualizá-las depois de uma mudança visual intencional: `bunx playwright test e2e/visual.spec.ts --update-snapshots`.
+
+## Autor
+
+Manuel — [LinkedIn](https://www.linkedin.com/in/nuelst/) · [GitHub](https://github.com/nuelst)
