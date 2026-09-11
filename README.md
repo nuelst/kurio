@@ -4,26 +4,22 @@ Solução em desenvolvimento para o [desafio frontend](CHALLENGE.md) de um marke
 
 ## Status atual
 
-Esta é a primeira fatia entregue: as **9 telas do enunciado estão todas implementadas** — Início/Catálogo, Detalhe do NFT, Carrinho, Login, Cadastro, Perfil do colecionador, Carteiras, Pagamento e Confirmação de pedido — seguindo o padrão arquitetural descrito em [ARCHITECTURE.md](ARCHITECTURE.md). Itens fora do escopo listado (perfil editorial completo, atividade, ofertas etc.) ficam como chrome visual com placeholder, documentado abaixo.
+As **9 telas do enunciado estão implementadas** — Início/Catálogo, Detalhe do NFT, Carrinho, Login, Cadastro, Perfil, Carteiras, Pagamento e Confirmação de pedido — seguindo o padrão descrito em [ARCHITECTURE.md](ARCHITECTURE.md).
 
-Implementado até aqui:
+| Área | Cobertura |
+| --- | --- |
+| Catálogo | Busca, filtro por categoria/preço, ordenação e paginação refletidos na URL (sobrevivem a refresh/histórico) |
+| Detalhe do NFT | Galeria com zoom, quantidade/estoque, favoritar, compartilhar, "mais desta coleção", 404 tratado |
+| Carrinho | Adicionar/editar/remover, cupom, totais sempre da API, carrinho de visitante migra ao logar, preço/estoque em tempo real |
+| Conta | Login/cadastro via modal, sessão persistida, perfil (dados/avatar/senha), carteiras (principal/secundária) |
+| Pagamento | Seleção de carteira/rede com conexão/recusa/desconexão simuladas, revalidação de cotação, idempotência, expiração de sessão sem perder o formulário |
+| Confirmação | Pedido `pending → confirmed/declined` via Socket.IO, recibo imutável, recuperação após refresh |
+| Tempo real | `nft.updated` e `order.updated` refletidos em catálogo/carrinho/pagamento/pedido, reconciliação pós-reconexão |
+| Mocks | MSW + `@mswjs/data`, cenários de rede configuráveis (ver abaixo) |
+| Testes | Playwright — funcionais, acessibilidade e regressão visual, 3 viewports |
+| Performance | Lighthouse — ver [lighthouse/REPORT.md](lighthouse/REPORT.md) |
 
-- Identidade visual da Kurio aplicada por completo na Início (cores, tipografia mono, container de 1200px — veja [ARCHITECTURE.md](ARCHITECTURE.md#identidade-visual-kurio)): header, hero, catálogo, cards promocionais, blog "Diário da Cunhagem", newsletter e footer.
-- Catálogo com busca, filtro por coleção/categoria (com contagens reais), faixa de preço, ordenação e paginação — tudo refletido na URL, sobrevivendo a refresh e à navegação pelo histórico (voltar/avançar).
-- **Detalhe do NFT**: galeria com zoom, edição/quantidade (respeitando o estoque), favoritar, compartilhar (LinkedIn/e-mail/Twitter reais), abas de detalhes/avaliações, "mais desta coleção" scrollável, acesso direto e tratamento de NFT inexistente — veja [ARCHITECTURE.md](ARCHITECTURE.md#detalhe-do-nft).
-- **Carrinho**: adicionar via "Comprar" no detalhe, editar quantidade e remover item (respeitando estoque), aplicar/remover cupom promocional (com tratamento de código inválido/expirado), subtotal/desconto/taxa/total sempre vindos da API, carrinho de visitante que migra para o usuário ao autenticar, persistência após refresh e atualização de preço/disponibilidade em tempo real via Socket.IO — veja [ARCHITECTURE.md](ARCHITECTURE.md#carrinho).
-- Favoritar/desfavoritar com atualização otimista e rollback em falha (catálogo e detalhe compartilham o mesmo cache).
-- **Login e cadastro reais** via modal (validação client-side com Zod, tratamento de conflito de e-mail e credenciais inválidas do lado do mock, sessão persistida, logout limpa cache/sockets — veja [ARCHITECTURE.md](ARCHITECTURE.md#autenticação)).
-- **Perfil do colecionador**: edição de nome/usuário/e-mail/ENS, upload real de avatar (com remoção), alteração de senha (opcional, com revalidação da senha atual no mock) — tudo sincronizado de volta com a sessão/header ao salvar. Acesso exige login (redireciona e abre o modal) — veja [ARCHITECTURE.md](ARCHITECTURE.md#perfil-e-carteiras).
-- **Carteiras**: cadastro/edição de carteira principal e secundária (apelido, rede, endereço, tipo — MetaMask/WalletConnect/Coinbase —, ENS opcional), atalho para copiar os dados da principal na secundária, remoção da secundária — veja [ARCHITECTURE.md](ARCHITECTURE.md#perfil-e-carteiras).
-- **Pagamento**: revisão/edição dos dados do colecionador (pré-preenchidos do perfil), seleção entre as carteiras cadastradas com simulação real de conexão/recusa/desconexão (recusa de verdade quando a carteira está numa rede diferente de Ethereum), revalidação da cotação no servidor antes de confirmar (rejeita com 409 se algo mudou), idempotência que sobrevive a refresh e expiração de sessão simulável *durante* o preenchimento — o login reabre por cima da tela sem perder o formulário — veja [ARCHITECTURE.md](ARCHITECTURE.md#pagamento-e-confirmação-de-pedido).
-- **Confirmação de pedido, assíncrona de verdade**: o pedido nasce `pending` e resolve (`confirmed`/`declined`) ~1.5s depois via `order.updated` no Socket.IO (com polling de fallback) — sobrevive a reload no meio do processamento sem duplicar a compra. Recibo em `/orders/:id` com ID de transação, itens, taxas e total, um snapshot congelado no momento da confirmação (mudanças depois no catálogo não afetam o recibo), com link simulado "Ver no Etherscan". Pedidos recusados mostram uma tela distinta sem mexer no carrinho — veja [ARCHITECTURE.md](ARCHITECTURE.md#pagamento-e-confirmação-de-pedido).
-- **Tempo real**: atualização de preço/disponibilidade via Socket.IO (evento `nft.updated`) refletida no catálogo, no carrinho e no pagamento — inclusive quando o próprio estoque cai por causa de uma compra confirmada em outra aba/usuário; e reconciliação automática pós-reconexão do socket (refetch dos recursos ativos ao reconectar, cobrindo qualquer atualização perdida enquanto desconectado) — veja [ARCHITECTURE.md](ARCHITECTURE.md#tempo-real-socketio).
-- Camada de mocks com MSW + `@mswjs/data`, com cenários de rede configuráveis (latência, vazio, erro, pedido recusado, timeout na criação do pedido), usando os 4 artworks de NFT fornecidos.
-- Suíte de testes E2E (Playwright): catálogo (busca/filtro/ordenação/paginação/histórico, loading lento com skeleton, erro com retry), autenticação, detalhe do NFT (favoritar com rollback em falha), carrinho, perfil, carteiras, pagamento (fluxo completo, recusa de rede, pedido recusado, sem carteira cadastrada, cotação desatualizada, idempotência, timeout com recuperação, expiração de sessão, preço mudando ao vivo), confirmação de pedido (recibo, recuperação após refresh, imutabilidade, pedido pendente resolvendo ao vivo), tempo real (reconexão do socket, reconciliação, eventos duplicados/antigos, desconexão), navegação por teclado e foco de diálogos, e regressão visual (baselines versionadas) — rodando em viewport desktop (1440px), mobile (390px) e tablet (768px).
-- **Auditoria Lighthouse**: Início e Detalhe do NFT, mobile e desktop, 3 medições por combinação com mediana reportada — `bun run lighthouse`. Relatório em [lighthouse/REPORT.md](lighthouse/REPORT.md) (ambiente, resultados, causas de qualquer categoria abaixo da meta), relatórios HTML/JSON individuais em `lighthouse/reports/` — veja [ARCHITECTURE.md](ARCHITECTURE.md#desvios-e-limitações).
-
-Chrome visível mas ainda sem função real (busca global, nav secundária, filtro por rede, links do footer, OAuth/recuperação de senha, itens fora do escopo do sidebar de conta) mostra um toast "chega em breve" ao ser clicado — veja [ARCHITECTURE.md](ARCHITECTURE.md#identidade-visual-kurio).
+Chrome fora do escopo (busca global, nav secundária, filtro por rede, links do footer, OAuth/recuperação de senha, itens fora do sidebar de conta) mostra um toast "chega em breve" em vez de simular sucesso — detalhes e decisões de UX em [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Stack
 
