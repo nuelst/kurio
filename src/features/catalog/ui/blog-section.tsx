@@ -49,13 +49,13 @@ export function BlogSection() {
         {posts.map((post) => (
           <article
             key={post.title}
-            className="mx-auto flex w-full max-w-[268px] flex-col overflow-hidden rounded-lg bg-sidebar"
+            className="group mx-auto flex w-full max-w-[268px] flex-col overflow-hidden rounded-lg bg-sidebar transition-shadow motion-safe:duration-300 hover:shadow-lg hover:shadow-black/20"
           >
-            <div className="aspect-[268/195] w-full">
+            <div className="aspect-[268/195] w-full overflow-hidden">
               <img
                 src={post.image}
                 alt=""
-                className="size-full object-cover"
+                className="size-full object-cover transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-110"
                 width={268}
                 height={195}
                 loading="lazy"

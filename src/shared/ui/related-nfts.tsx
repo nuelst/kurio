@@ -15,7 +15,7 @@ function RelatedNftsSkeleton() {
   return (
     <>
       <div
-        className="mt-6 flex gap-6 overflow-x-auto pb-2"
+        className="scrollbar-hide mt-6 flex gap-6 overflow-x-auto pb-2"
         role="status"
         aria-label="Carregando NFTs"
       >
@@ -57,7 +57,7 @@ export function RelatedNfts({ title, items, isLoading, onToggleFavorite }: Relat
       ) : (
         <>
           <div
-            className="mt-6 flex gap-6 overflow-x-auto pb-2"
+            className="scrollbar-hide mt-6 flex gap-6 overflow-x-auto pb-2"
             style={{ scrollSnapType: 'x proximity' }}
           >
             {items.map((item) => (

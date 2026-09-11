@@ -16,7 +16,7 @@ export function NftCard({ nft, onToggleFavorite }: NftCardProps) {
 
   return (
     <div
-      className="flex flex-col gap-3 overflow-hidden rounded-[15px] bg-sidebar"
+      className="group flex flex-col gap-3 overflow-hidden rounded-[15px] bg-sidebar transition-shadow motion-safe:duration-300 hover:shadow-lg hover:shadow-black/20"
       data-testid="nft-card"
     >
       <div className="bg-muted relative aspect-square w-full overflow-hidden rounded-[15px]">
@@ -32,7 +32,7 @@ export function NftCard({ nft, onToggleFavorite }: NftCardProps) {
             loading="lazy"
             width={250}
             height={250}
-            className="size-full object-cover"
+            className="size-full object-cover transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-110"
           />
         </Link>
         <button

@@ -27,13 +27,13 @@ export function PromoCards() {
         {promos.map((promo) => (
           <div
             key={promo.title}
-            className="flex h-auto w-full max-w-[586px] overflow-hidden rounded-lg bg-card sm:h-[250px]"
+            className="group flex h-auto w-full max-w-[586px] overflow-hidden rounded-lg bg-card transition-shadow motion-safe:duration-300 hover:shadow-lg hover:shadow-black/20 sm:h-[250px]"
           >
-            <div className="w-28 shrink-0 self-stretch sm:w-[288px]">
+            <div className="w-28 shrink-0 self-stretch overflow-hidden sm:w-[288px]">
               <img
                 src={promo.image}
                 alt={promo.alt}
-                className="size-full object-cover"
+                className="size-full object-cover transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-110"
                 width={288}
                 height={250}
                 loading="lazy"
