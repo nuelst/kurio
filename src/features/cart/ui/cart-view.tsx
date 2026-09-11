@@ -91,15 +91,17 @@ export function CartView(viewModel: CartViewModel) {
                 <div>Total</div>
                 <div />
               </div>
-              {quote.items.map((line) => (
-                <CartLineItem
-                  key={line.nftId}
-                  line={line}
-                  onIncrement={incrementQuantity}
-                  onDecrement={decrementQuantity}
-                  onRemove={removeItem}
-                />
-              ))}
+              <div className="mt-3 flex flex-col gap-3">
+                {quote.items.map((line) => (
+                  <CartLineItem
+                    key={line.nftId}
+                    line={line}
+                    onIncrement={incrementQuantity}
+                    onDecrement={decrementQuantity}
+                    onRemove={removeItem}
+                  />
+                ))}
+              </div>
             </div>
 
             <CartSummaryPanel

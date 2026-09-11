@@ -5,6 +5,13 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { notImplementedToast } from '@/shared/lib/not-implemented'
+import {
+  FacebookIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  TwitterIcon,
+  YoutubeIcon,
+} from '@/shared/ui/icons'
 
 const features = [
   {
@@ -47,11 +54,11 @@ const collectionLinks = [
   { label: 'Utilidade', category: 'utility' },
 ]
 const socialLinks = [
-  { label: 'Facebook', abbreviation: 'FB' },
-  { label: 'Instagram', abbreviation: 'IG' },
-  { label: 'Twitter', abbreviation: 'X' },
-  { label: 'LinkedIn', abbreviation: 'in' },
-  { label: 'YouTube', abbreviation: 'YT' },
+  { label: 'Facebook', Icon: FacebookIcon },
+  { label: 'Instagram', Icon: InstagramIcon },
+  { label: 'Twitter', Icon: TwitterIcon },
+  { label: 'LinkedIn', Icon: LinkedinIcon },
+  { label: 'YouTube', Icon: YoutubeIcon },
 ]
 const compatibleWallets = ['MetaMask', 'WalletConnect', 'Coinbase']
 
@@ -84,7 +91,7 @@ export function SiteFooter() {
   return (
     <footer className="mx-auto max-w-page px-4 sm:px-6">
       {/* 1: newsletter + destaques — bg surface-card */}
-      <div className="grid grid-cols-1 gap-3 rounded-t-2xl bg-sidebar p-8 lg:grid-cols-[1fr_1fr_1fr_1.35fr]">
+      <div className="grid grid-cols-1 gap-3 bg-sidebar p-8 lg:grid-cols-[1fr_1fr_1fr_1.35fr]">
         {features.map((feature, index) => (
           <div
             key={feature.title}
@@ -104,7 +111,7 @@ export function SiteFooter() {
           }}
         >
           <h3 className="font-semibold text-foreground">Antecipe-se ao próximo lançamento</h3>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Input
               type="email"
               required
@@ -112,6 +119,7 @@ export function SiteFooter() {
               aria-label="E-mail para newsletter"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
+              className="min-w-0 flex-1 bg-input placeholder:text-[#B39463]"
             />
             <Button type="submit">Enviar</Button>
           </div>
@@ -137,7 +145,7 @@ export function SiteFooter() {
       </div>
 
       {/* 3: colunas de links — bg surface-card */}
-      <div className="grid grid-cols-2 gap-8 rounded-b-2xl bg-sidebar p-8 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-8 bg-sidebar p-8 lg:grid-cols-4">
         <div className="space-y-3">
           <h3 className="text-sm font-semibold text-foreground">Meu perfil</h3>
           {profileLinks.map((label) => (
@@ -171,27 +179,25 @@ export function SiteFooter() {
           <div className="space-y-3">
             <h3 className="text-sm font-semibold text-foreground">Redes sociais</h3>
             <div className="flex gap-2">
-              {socialLinks.map(({ label, abbreviation }) => (
+              {socialLinks.map(({ label, Icon }) => (
                 <button
                   key={label}
                   type="button"
                   onClick={() => notImplementedToast(label)}
                   aria-label={label}
-                  className="flex size-8 items-center justify-center rounded-md border border-border text-xs text-muted-foreground transition-colors hover:text-primary"
+                  className="flex size-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:text-primary"
                 >
-                  <span aria-hidden="true">{abbreviation}</span>
+                  <Icon className="size-4" />
                 </button>
               ))}
             </div>
           </div>
           <div className="space-y-3">
             <h3 className="text-sm font-semibold text-foreground">Carteiras compatíveis</h3>
-            <div className="flex flex-wrap gap-2">
-              {compatibleWallets.map((wallet) => (
-                <span
-                  key={wallet}
-                  className="rounded-md border border-border px-2 py-1 text-xs text-muted-foreground uppercase"
-                >
+            <div className="flex h-[26px] w-full max-w-[228px] items-center gap-2.5 rounded-sm border border-[#55321F] bg-card px-2 text-[9px] leading-none font-bold tracking-[0.1px] text-[#E89B55] uppercase">
+              {compatibleWallets.map((wallet, index) => (
+                <span key={wallet} className="flex items-center gap-2.5">
+                  {index > 0 ? <span aria-hidden="true">•</span> : null}
                   {wallet}
                 </span>
               ))}
@@ -207,5 +213,3 @@ export function SiteFooter() {
     </footer>
   )
 }
-
-//TODO: mudar os icones

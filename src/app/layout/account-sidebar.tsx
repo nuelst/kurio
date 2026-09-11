@@ -23,7 +23,7 @@ export function AccountSidebar() {
   const logout = useLogout()
 
   return (
-    <aside className="w-full shrink-0 lg:w-[280px]">
+    <aside className="w-full shrink-0 self-start rounded-2xl bg-sidebar p-6 lg:w-[280px]">
       <h1 className="text-lg font-bold text-foreground">Meu perfil</h1>
 
       <nav className="mt-6 flex flex-col" aria-label="Navegação da conta">
@@ -59,7 +59,7 @@ export function AccountSidebar() {
             logout()
             navigate({ to: '/' })
           }}
-          className="flex items-center gap-3 border-l-2 border-transparent py-3 pl-4 text-left text-sm font-semibold text-primary"
+          className="mt-2 flex items-center gap-3 border-t border-l-2 border-transparent border-t-border py-3 pl-4 text-left text-sm font-semibold text-primary"
         >
           <LogOut className="size-4" />
           Sair

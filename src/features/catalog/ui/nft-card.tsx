@@ -2,7 +2,6 @@ import { Link } from '@tanstack/react-router'
 import { Heart } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import type { NftSummary } from '@/features/catalog/model/nft'
 import { cn } from '@/lib/utils'
 import { formatEth } from '@/shared/lib/money'
@@ -36,19 +35,17 @@ export function NftCard({ nft, onToggleFavorite }: NftCardProps) {
             className="size-full object-cover"
           />
         </Link>
-        <Button
+        <button
           type="button"
-          variant="secondary"
-          size="icon"
-          className="absolute top-2 right-2"
           aria-pressed={nft.isFavorite}
           aria-label={
             nft.isFavorite ? `Remover ${nft.title} dos favoritos` : `Favoritar ${nft.title}`
           }
           onClick={() => onToggleFavorite(nft)}
+          className="absolute top-2 right-2 text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)] transition-colors hover:text-primary"
         >
-          <Heart className={cn('size-4', nft.isFavorite && 'text-destructive fill-current')} />
-        </Button>
+          <Heart className={cn('size-5', nft.isFavorite && 'fill-current text-destructive')} />
+        </button>
         {isSoldOut ? (
           <Badge variant="destructive" className="absolute bottom-2 left-2">
             Esgotado

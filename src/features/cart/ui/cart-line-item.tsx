@@ -15,7 +15,7 @@ interface CartLineItemProps {
 export function CartLineItem({ line, onIncrement, onDecrement, onRemove }: CartLineItemProps) {
   return (
     <div
-      className="grid grid-cols-[64px_1fr] items-center gap-4 border-b border-border py-4 sm:grid-cols-[64px_1fr_110px_140px_110px_32px]"
+      className="grid grid-cols-[64px_1fr] items-center gap-4 rounded-lg bg-sidebar px-4 py-4 sm:grid-cols-[64px_1fr_110px_140px_110px_32px]"
       data-testid="cart-line"
     >
       <Link to="/nfts/$nftId" params={{ nftId: line.nftId }} className="shrink-0">

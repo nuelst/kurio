@@ -5,11 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { FacebookIcon, GoogleIcon } from '@/features/auth/ui/oauth-icons'
 import { useSignupForm } from '@/features/auth/viewmodel/use-signup-form'
-import { cn } from '@/lib/utils'
 import { notImplementedToast } from '@/shared/lib/not-implemented'
-
-const fieldClassName =
-  'h-10 w-full rounded-[5px] border border-primary bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground'
 
 export function SignupForm() {
   const { form, isPending, submit } = useSignupForm()
@@ -27,7 +23,6 @@ export function SignupForm() {
           placeholder="Nome de usuário"
           aria-label="Nome de usuário"
           aria-invalid={Boolean(errors.name)}
-          className={fieldClassName}
           {...register('name')}
         />
         {errors.name ? (
@@ -41,7 +36,6 @@ export function SignupForm() {
           placeholder="Digite seu e-mail"
           aria-label="E-mail"
           aria-invalid={Boolean(errors.email)}
-          className={fieldClassName}
           {...register('email')}
         />
         {errors.email ? (
@@ -55,7 +49,7 @@ export function SignupForm() {
           placeholder="Senha"
           aria-label="Senha"
           aria-invalid={Boolean(errors.password)}
-          className={cn(fieldClassName, 'pr-10')}
+          className="pr-10"
           {...register('password')}
         />
         <button
@@ -77,7 +71,6 @@ export function SignupForm() {
           placeholder="Confirmar senha"
           aria-label="Confirmar senha"
           aria-invalid={Boolean(errors.confirmPassword)}
-          className={fieldClassName}
           {...register('confirmPassword')}
         />
         {errors.confirmPassword ? (

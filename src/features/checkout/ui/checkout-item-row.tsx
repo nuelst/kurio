@@ -3,7 +3,7 @@ import { formatEth } from '@/shared/lib/money'
 
 export function CheckoutItemRow({ line }: { line: CartLine }) {
   return (
-    <div className="flex items-center gap-3 border-b border-border py-3 last:border-b-0">
+    <div className="flex items-center gap-3 rounded-lg bg-sidebar p-3">
       <img
         src={line.imageUrl}
         alt=""
