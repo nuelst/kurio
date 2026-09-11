@@ -38,7 +38,7 @@ export function MobileHeroCard() {
           </button>
         </div>
 
-        <div className="absolute top-4 right-4 size-28">
+        <div className="absolute top-4 right-4 aspect-square w-[30%] max-w-32">
           <div className="size-full overflow-hidden rounded-2xl bg-card">
             <img
               src={nftFeatured}
@@ -49,7 +49,7 @@ export function MobileHeroCard() {
               fetchPriority="high"
             />
           </div>
-          <div className="absolute bottom-[-11%] left-[-18%] size-[45%] overflow-hidden rounded-lg border-2 border-background">
+          <div className="absolute bottom-[-11%] left-[-18%] size-[45%] overflow-hidden rounded-lg">
             <img
               src={nftThumbnail}
               alt="NFT relacionado: ilustração de macaco estilizado com chapéu e moletom"

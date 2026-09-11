@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { useLayoutEffect, useRef, useState } from 'react'
 
 import { notImplementedToast } from '@/shared/lib/not-implemented'
 import { useSession } from '@/shared/stores/session-store'
@@ -14,75 +15,63 @@ import {
 const tabLinkClassName =
   'flex flex-1 items-center justify-center py-3 text-muted-foreground transition-colors data-[status=active]:text-primary'
 
-const BAR_WIDTH = 414
+const DEFAULT_BAR_WIDTH = 414
 const BAR_HEIGHT = 94.95
 const BAR_TOP = 31
 const CONTAINER_HEIGHT = BAR_TOP + BAR_HEIGHT
 const CORNER_RADIUS = 28
 const FAB_SIZE = 65
-const NOTCH_R = FAB_SIZE / 2 + 3.5
-const NOTCH_CX = BAR_WIDTH / 2
-const TRANSITION = 24
+const NOTCH_R = FAB_SIZE / 2 + 2
+const TRANSITION = 16
 
-const notchPath = `
-  M 0,${BAR_HEIGHT}
-  L 0,${CORNER_RADIUS}
-  Q 0,0 ${CORNER_RADIUS},0
-  L ${NOTCH_CX - NOTCH_R - TRANSITION},0
-  C ${NOTCH_CX - NOTCH_R - TRANSITION * 0.4},0 ${NOTCH_CX - NOTCH_R},${NOTCH_R * 0.55} ${NOTCH_CX - NOTCH_R},${NOTCH_R}
-  A ${NOTCH_R},${NOTCH_R} 0 0 0 ${NOTCH_CX + NOTCH_R},${NOTCH_R}
-  C ${NOTCH_CX + NOTCH_R},${NOTCH_R * 0.55} ${NOTCH_CX + NOTCH_R + TRANSITION * 0.4},0 ${NOTCH_CX + NOTCH_R + TRANSITION},0
-  L ${BAR_WIDTH - CORNER_RADIUS},0
-  Q ${BAR_WIDTH},0 ${BAR_WIDTH},${CORNER_RADIUS}
-  L ${BAR_WIDTH},${BAR_HEIGHT}
-  Z
-`
-
-// Fills the notch void (from the container top down to the notch curve above)
-// by re-tracing the same curve as `notchPath`, offset by BAR_TOP, so the two
-// shapes meet with no gap or overhang.
-const notchBackdropPath = `
-  M ${NOTCH_CX - NOTCH_R - TRANSITION},0
-  L ${NOTCH_CX - NOTCH_R - TRANSITION},${BAR_TOP}
-  C ${NOTCH_CX - NOTCH_R - TRANSITION * 0.4},${BAR_TOP} ${NOTCH_CX - NOTCH_R},${BAR_TOP + NOTCH_R * 0.55} ${NOTCH_CX - NOTCH_R},${BAR_TOP + NOTCH_R}
-  A ${NOTCH_R},${NOTCH_R} 0 0 0 ${NOTCH_CX + NOTCH_R},${BAR_TOP + NOTCH_R}
-  C ${NOTCH_CX + NOTCH_R},${BAR_TOP + NOTCH_R * 0.55} ${NOTCH_CX + NOTCH_R + TRANSITION * 0.4},${BAR_TOP} ${NOTCH_CX + NOTCH_R + TRANSITION},${BAR_TOP}
-  L ${NOTCH_CX + NOTCH_R + TRANSITION},0
-  Z
-`
+function buildNotchPath(barWidth: number) {
+  const notchCx = barWidth / 2
+  return `
+    M 0,${BAR_HEIGHT}
+    L 0,${CORNER_RADIUS}
+    Q 0,0 ${CORNER_RADIUS},0
+    L ${notchCx - NOTCH_R - TRANSITION},0
+    C ${notchCx - NOTCH_R - TRANSITION * 0.4},0 ${notchCx - NOTCH_R},${NOTCH_R * 0.55} ${notchCx - NOTCH_R},${NOTCH_R}
+    A ${NOTCH_R},${NOTCH_R} 0 0 0 ${notchCx + NOTCH_R},${NOTCH_R}
+    C ${notchCx + NOTCH_R},${NOTCH_R * 0.55} ${notchCx + NOTCH_R + TRANSITION * 0.4},0 ${notchCx + NOTCH_R + TRANSITION},0
+    L ${barWidth - CORNER_RADIUS},0
+    Q ${barWidth},0 ${barWidth},${CORNER_RADIUS}
+    L ${barWidth},${BAR_HEIGHT}
+    Z
+  `
+}
 
 export function MobileTabBar() {
   const isAuthenticated = useSession((state) => Boolean(state.user))
+  const navRef = useRef<HTMLElement>(null)
+  const [barWidth, setBarWidth] = useState(DEFAULT_BAR_WIDTH)
+
+  useLayoutEffect(() => {
+    const el = navRef.current
+    if (!el) return
+
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry) setBarWidth(entry.contentRect.width)
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <nav
+      ref={navRef}
       aria-label="Navegação principal"
       className="fixed inset-x-0 bottom-0 z-40 md:hidden"
       style={{ height: CONTAINER_HEIGHT }}
     >
-      <svg
-        viewBox={`0 0 ${BAR_WIDTH} ${CONTAINER_HEIGHT}`}
-        preserveAspectRatio="none"
-        className="absolute inset-0 size-full"
-        aria-hidden="true"
-      >
-        <path d={notchBackdropPath} className="fill-sidebar" />
-      </svg>
-
-      <div
-        className="absolute inset-x-0 bottom-0"
-        style={{
-          height: BAR_HEIGHT,
-          filter: 'drop-shadow(0px -10px 30px rgba(10, 6, 4, 0.45))',
-        }}
-      >
+      <div className="absolute inset-x-0 bottom-0" style={{ height: BAR_HEIGHT }}>
         <svg
-          viewBox={`0 0 ${BAR_WIDTH} ${BAR_HEIGHT}`}
+          viewBox={`0 0 ${barWidth} ${BAR_HEIGHT}`}
           preserveAspectRatio="none"
           className="absolute inset-0 size-full"
           aria-hidden="true"
         >
-          <path d={notchPath} className="fill-sidebar" />
+          <path d={buildNotchPath(barWidth)} className="fill-sidebar" />
         </svg>
 
         <div className="relative flex h-full items-center">

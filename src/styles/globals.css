@@ -96,6 +96,11 @@
   html {
     @apply font-sans;
   }
+  @media (max-width: 767px) {
+    html {
+      scroll-padding-bottom: 95px;
+    }
+  }
 
   button:not(:disabled),
   a[href],

@@ -31,7 +31,7 @@ export function CheckoutSummary({
     <aside className="w-full shrink-0 rounded-2xl bg-sidebar p-6 lg:w-[380px]">
       <h2 className="text-lg font-bold text-foreground">Seus NFTs</h2>
 
-      <div className="mt-4">
+      <div className="mt-4 flex flex-col gap-2">
         {quote.items.map((line) => (
           <CheckoutItemRow key={line.nftId} line={line} />
         ))}

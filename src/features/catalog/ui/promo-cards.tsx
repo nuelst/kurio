@@ -29,7 +29,7 @@ export function PromoCards() {
             key={promo.title}
             className="flex h-auto w-full max-w-[586px] overflow-hidden rounded-lg bg-card sm:h-[250px]"
           >
-            <div className="h-40 w-28 shrink-0 sm:h-full sm:w-[288px]">
+            <div className="w-28 shrink-0 self-stretch sm:w-[288px]">
               <img
                 src={promo.image}
                 alt={promo.alt}

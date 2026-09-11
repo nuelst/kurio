@@ -5,11 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { FacebookIcon, GoogleIcon } from '@/features/auth/ui/oauth-icons'
 import { useLoginForm } from '@/features/auth/viewmodel/use-login-form'
-import { cn } from '@/lib/utils'
 import { notImplementedToast } from '@/shared/lib/not-implemented'
-
-const fieldClassName =
-  'h-10 w-full rounded-[5px] border border-primary bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground'
 
 export function LoginForm() {
   const { form, isPending, submit } = useLoginForm()
@@ -27,7 +23,6 @@ export function LoginForm() {
           placeholder="contato@email.com"
           aria-label="E-mail"
           aria-invalid={Boolean(errors.email)}
-          className={fieldClassName}
           {...register('email')}
         />
         {errors.email ? (
@@ -41,7 +36,7 @@ export function LoginForm() {
           placeholder="Senha"
           aria-label="Senha"
           aria-invalid={Boolean(errors.password)}
-          className={cn(fieldClassName, 'pr-10')}
+          className="pr-10"
           {...register('password')}
         />
         <button
