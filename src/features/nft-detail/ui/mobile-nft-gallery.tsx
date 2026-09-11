@@ -25,12 +25,14 @@ export function MobileNftGallery({
 
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="relative aspect-square w-full overflow-hidden rounded-[24px]">
+        <img src={activeImage} alt={title} className="size-full object-cover" />
+
         <button
           type="button"
           onClick={() => router.history.back()}
           aria-label="Voltar"
-          className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/10 text-foreground backdrop-blur-sm"
+          className="absolute top-3 left-3 flex size-9 shrink-0 items-center justify-center rounded-full border border-[#3F2319] bg-[#2F1D15] text-foreground"
         >
           <ChevronLeft className="size-5" />
         </button>
@@ -39,14 +41,10 @@ export function MobileNftGallery({
           type="button"
           onClick={onToggleFavorite}
           aria-label={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
-          className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/10 text-foreground backdrop-blur-sm"
+          className="absolute top-3 right-3 flex size-9 shrink-0 items-center justify-center rounded-full border border-[#3F2319] bg-[#2F1D15] text-foreground"
         >
           <Heart className={cn('size-4', isFavorite && 'fill-current text-destructive')} />
         </button>
-      </div>
-
-      <div className="mt-4 aspect-square w-full overflow-hidden rounded-[24px]">
-        <img src={activeImage} alt={title} className="size-full object-cover" />
       </div>
 
       {images.length > 1 ? (

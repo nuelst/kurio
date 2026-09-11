@@ -37,7 +37,10 @@ export function CatalogFilterDrawer({
           type="button"
           size="icon"
           aria-label="Filtros"
-          className="rounded-xl bg-sidebar text-foreground hover:bg-sidebar/80"
+          className="size-[45px] rounded-xl p-3 text-primary-foreground"
+          style={{
+            background: 'linear-gradient(137.05deg, rgba(210, 138, 76, 0.45) -24.6%, #D28A4C 100%)',
+          }}
         >
           <FilterIcon className="size-5" />
         </Button>
